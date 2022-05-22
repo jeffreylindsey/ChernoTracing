@@ -18,6 +18,9 @@ class c_MainLayer : public Walnut::Layer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
+		void UISettings();
+		void UIViewport();
+
 		void Render();
 
 	//--- Private Members -----------------------------------------------------

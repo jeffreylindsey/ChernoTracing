@@ -13,6 +13,15 @@
 -----------------------------------------------------------------------------*/
 void c_MainLayer::OnUIRender()
 {
+	UISettings();
+	UIViewport();
+
+	Render();
+}
+
+/*===========================================================================*/
+void c_MainLayer::UISettings()
+{
 	ImGui::Begin("Settings");
 
 	ImGui::Text("Last render: %.3fms", m_LastRenderTime);
@@ -20,9 +29,11 @@ void c_MainLayer::OnUIRender()
 		Render();
 
 	ImGui::End();
+}
 
-	//---
-
+/*===========================================================================*/
+void c_MainLayer::UIViewport()
+{
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("Viewport");
 
@@ -41,8 +52,6 @@ void c_MainLayer::OnUIRender()
 
 	ImGui::End();
 	ImGui::PopStyleVar();
-
-	Render();
 }
 
 /*===========================================================================*/
