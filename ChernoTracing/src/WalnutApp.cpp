@@ -45,11 +45,8 @@ public:
 			m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 		}
 
-		for (uint32_t i = 0; i < m_ViewportWidth * m_ViewportHeight; i++)
-		{
-			m_ImageData[i] = Random::UInt();
-			m_ImageData[i] |= 0xFF000000;
-		}
+		for (uint32_t& r_Pixel : m_ImageData)
+			r_Pixel = Random::UInt() | 0xFF000000;
 
 		m_Image->SetData(m_ImageData.data());
 
