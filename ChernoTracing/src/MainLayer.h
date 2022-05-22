@@ -9,7 +9,7 @@
 class c_MainLayer : public Walnut::Layer
 {
 public:
-	virtual void OnUIRender() override;
+	void OnUIRender() override;
 
 	void Render();
 
