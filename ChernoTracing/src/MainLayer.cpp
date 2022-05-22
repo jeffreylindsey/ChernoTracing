@@ -40,7 +40,7 @@ void c_MainLayer::UIViewport()
 	m_ViewportWidth = static_cast<uint32_t>(ImGui::GetContentRegionAvail().x);
 	m_ViewportHeight = static_cast<uint32_t>(ImGui::GetContentRegionAvail().y);
 
-	if (m_Image)
+	if (m_Image != nullptr)
 	{
 		ImGui::Image
 			( m_Image->GetDescriptorSet()
@@ -59,7 +59,7 @@ void c_MainLayer::Render()
 {
 	Walnut::Timer timer;
 
-	if (!m_Image
+	if (m_Image == nullptr
 		|| m_ViewportWidth != m_Image->GetWidth()
 		|| m_ViewportHeight != m_Image->GetHeight()
 	)
