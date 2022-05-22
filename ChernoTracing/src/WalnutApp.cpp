@@ -42,8 +42,7 @@ public:
 		if (!m_Image || m_ViewportWidth != m_Image->GetWidth() || m_ViewportHeight != m_Image->GetHeight())
 		{
 			m_Image = std::make_shared<Image>(m_ViewportWidth, m_ViewportHeight, ImageFormat::RGBA);
-			delete[] m_ImageData;
-			m_ImageData = new uint32_t[m_ViewportWidth * m_ViewportHeight];
+			m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 		}
 
 		for (uint32_t i = 0; i < m_ViewportWidth * m_ViewportHeight; i++)
@@ -52,14 +51,14 @@ public:
 			m_ImageData[i] |= 0xFF000000;
 		}
 
-		m_Image->SetData(m_ImageData);
+		m_Image->SetData(m_ImageData.data());
 
 		m_LastRenderTime = timer.ElapsedMillis();
 	}
 
 private:
 	std::shared_ptr<Image> m_Image;
-	uint32_t* m_ImageData = nullptr;
+	std::vector<uint32_t> m_ImageData;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
 	float m_LastRenderTime = 0.0f;
