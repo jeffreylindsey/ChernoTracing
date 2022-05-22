@@ -5,6 +5,7 @@ bin-int/
 
 # Files
 *.vcxproj.user
+imgui.ini
 
 # Exclude
 !vendor/bin
