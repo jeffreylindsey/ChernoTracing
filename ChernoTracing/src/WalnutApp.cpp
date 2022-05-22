@@ -5,8 +5,6 @@
 #include "Walnut/Random.h"
 #include "Walnut/Timer.h"
 
-using namespace Walnut;
-
 class c_MainLayer : public Walnut::Layer
 {
 public:
@@ -37,16 +35,16 @@ public:
 
 	void Render()
 	{
-		Timer timer;
+		Walnut::Timer timer;
 
 		if (!m_Image || m_ViewportWidth != m_Image->GetWidth() || m_ViewportHeight != m_Image->GetHeight())
 		{
-			m_Image = std::make_shared<Image>(m_ViewportWidth, m_ViewportHeight, ImageFormat::RGBA);
+			m_Image = std::make_shared<Walnut::Image>(m_ViewportWidth, m_ViewportHeight, Walnut::ImageFormat::RGBA);
 			m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 		}
 
 		for (uint32_t& r_Pixel : m_ImageData)
-			r_Pixel = Random::UInt() | 0xFF000000;
+			r_Pixel = Walnut::Random::UInt() | 0xFF000000;
 
 		m_Image->SetData(m_ImageData.data());
 
@@ -54,7 +52,7 @@ public:
 	}
 
 private:
-	std::shared_ptr<Image> m_Image;
+	std::shared_ptr<Walnut::Image> m_Image;
 	std::vector<uint32_t> m_ImageData;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
