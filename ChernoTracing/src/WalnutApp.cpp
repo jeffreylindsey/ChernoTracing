@@ -23,11 +23,11 @@ public:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 
-		m_ViewportWidth = ImGui::GetContentRegionAvail().x;
-		m_ViewportHeight = ImGui::GetContentRegionAvail().y;
+		m_ViewportWidth = static_cast<uint32_t>(ImGui::GetContentRegionAvail().x);
+		m_ViewportHeight = static_cast<uint32_t>(ImGui::GetContentRegionAvail().y);
 
 		if (m_Image)
-			ImGui::Image(m_Image->GetDescriptorSet(), { (float)m_Image->GetWidth(), (float)m_Image->GetHeight() });
+			ImGui::Image(m_Image->GetDescriptorSet(), { static_cast<float>(m_Image->GetWidth()), static_cast<float>(m_Image->GetHeight()) });
 
 		ImGui::End();
 		ImGui::PopStyleVar();
