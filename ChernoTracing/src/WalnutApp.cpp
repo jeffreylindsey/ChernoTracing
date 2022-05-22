@@ -3,6 +3,7 @@
 #include "Walnut/Application.h"
 #include "Walnut/EntryPoint.h"
 
+/*===========================================================================*/
 Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
 {
 	Walnut::ApplicationSpecification spec;
@@ -23,3 +24,5 @@ Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
 	});
 	return app;
 }
+
+/*===========================================================================*/
