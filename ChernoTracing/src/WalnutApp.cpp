@@ -7,7 +7,7 @@
 
 using namespace Walnut;
 
-class ExampleLayer : public Walnut::Layer
+class c_MainLayer : public Walnut::Layer
 {
 public:
 	virtual void OnUIRender() override
@@ -67,7 +67,7 @@ Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
 	spec.Name = "ChernoTracing";
 
 	Walnut::Application* app = new Walnut::Application(spec);
-	app->PushLayer<ExampleLayer>();
+	app->PushLayer<c_MainLayer>();
 	app->SetMenubarCallback([app]()
 	{
 		if (ImGui::BeginMenu("File"))
