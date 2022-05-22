@@ -28,7 +28,7 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportWidth = 0;
 		uint32_t m_ViewportHeight = 0;
 
-		std::shared_ptr<Walnut::Image> m_Image;
+		std::unique_ptr<Walnut::Image> m_Image;
 		std::vector<uint32_t> m_ImageData;
 
 		float m_LastRenderTime = 0.0f;

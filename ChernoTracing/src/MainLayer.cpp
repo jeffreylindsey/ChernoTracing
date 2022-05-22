@@ -65,7 +65,7 @@ void c_MainLayer::Render()
 	)
 	{
 		m_Image
-			= std::make_shared<Walnut::Image>
+			= std::make_unique<Walnut::Image>
 				( m_ViewportWidth
 				, m_ViewportHeight
 				, Walnut::ImageFormat::RGBA
