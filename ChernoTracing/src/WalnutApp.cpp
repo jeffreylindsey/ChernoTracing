@@ -4,7 +4,7 @@
 #include "Walnut/EntryPoint.h"
 
 /*===========================================================================*/
-Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
+Walnut::Application* Walnut::CreateApplication(int, char**)
 {
 	Walnut::ApplicationSpecification spec;
 	spec.Name = "ChernoTracing";
