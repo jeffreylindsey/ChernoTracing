@@ -6,23 +6,29 @@
 /*===========================================================================*/
 std::unique_ptr<Walnut::Application> Walnut::CreateApplication(int, char**)
 {
-	Walnut::ApplicationSpecification spec;
-	spec.Name = "ChernoTracing";
+	const Walnut::ApplicationSpecification Specification
+		{ .Name = "ChernoTracing"
+		};
 
-	std::unique_ptr<Walnut::Application> app = std::make_unique<Walnut::Application>(spec);
-	app->PushLayer<c_MainLayer>();
-	app->SetMenubarCallback([&app]()
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Exit"))
+	std::unique_ptr<Walnut::Application> Application
+		= std::make_unique<Walnut::Application>(Specification);
+
+	Application->PushLayer<c_MainLayer>();
+
+	Application->SetMenubarCallback
+		( [&Application]()
 			{
-				app->Close();
+				if (ImGui::BeginMenu("File"))
+				{
+					if (ImGui::MenuItem("Exit"))
+						Application->Close();
+
+					ImGui::EndMenu();
+				}
 			}
-			ImGui::EndMenu();
-		}
-	});
-	return app;
+		);
+
+	return Application;
 }
 
 /*===========================================================================*/
