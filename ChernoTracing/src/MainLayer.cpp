@@ -74,8 +74,8 @@ void c_MainLayer::Render()
 		m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 	}
 
-	for (uint32_t& r_Pixel : m_ImageData)
-		r_Pixel = Walnut::Random::UInt() | 0xFF000000;
+	for (s_RGBA& r_Pixel : m_ImageData)
+		r_Pixel.Value = Walnut::Random::UInt() | 0xFF000000;
 
 	m_Image->SetData(m_ImageData.data());
 
