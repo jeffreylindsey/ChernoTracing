@@ -85,7 +85,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WL_PLATFORM_WINDOWS;WL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -103,7 +103,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WL_PLATFORM_WINDOWS;WL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -127,7 +127,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WL_PLATFORM_WINDOWS;WL_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Walnut\vendor\imgui;..\Walnut\vendor\glfw\include;..\Walnut\vendor\glm;..\Walnut\Walnut\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
