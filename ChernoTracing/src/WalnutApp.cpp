@@ -4,14 +4,14 @@
 #include "Walnut/EntryPoint.h"
 
 /*===========================================================================*/
-Walnut::Application* Walnut::CreateApplication(int, char**)
+std::unique_ptr<Walnut::Application> Walnut::CreateApplication(int, char**)
 {
 	Walnut::ApplicationSpecification spec;
 	spec.Name = "ChernoTracing";
 
-	Walnut::Application* app = new Walnut::Application(spec);
+	std::unique_ptr<Walnut::Application> app = std::make_unique<Walnut::Application>(spec);
 	app->PushLayer<c_MainLayer>();
-	app->SetMenubarCallback([app]()
+	app->SetMenubarCallback([&app]()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
