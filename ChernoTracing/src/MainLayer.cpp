@@ -64,12 +64,9 @@ void c_MainLayer::Render()
 	Walnut::Timer timer;
 
 	m_Image.Resize(m_ViewportWidth, m_ViewportHeight);
-	m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 
 	c_Renderer Renderer;
-	Renderer.Render(m_ImageData);
-
-	m_Image.SetData(m_ImageData.data());
+	Renderer.Render(m_Image);
 
 	m_LastRenderTime = timer.ElapsedMillis();
 }

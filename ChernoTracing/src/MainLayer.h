@@ -33,7 +33,6 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportHeight = 0;
 
 		Walnut::Image m_Image;
-		std::vector<s_RGBA> m_ImageData;
 
 		float m_LastRenderTime = 0.0f;
 };
