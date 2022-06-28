@@ -15,6 +15,8 @@ class c_MainLayer : public Walnut::Layer
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
+		c_MainLayer();
+
 		// Walnut::Layer
 		void OnUIRender() override;
 
@@ -30,7 +32,7 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportWidth = 0;
 		uint32_t m_ViewportHeight = 0;
 
-		std::unique_ptr<Walnut::Image> m_Image;
+		Walnut::Image m_Image;
 		std::vector<s_RGBA> m_ImageData;
 
 		float m_LastRenderTime = 0.0f;
