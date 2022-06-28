@@ -9,18 +9,39 @@
 /*===========================================================================*/
 void c_Renderer::Render(Walnut::Image& r_Image)
 {
-	m_ImageData.resize(r_Image.GetWidth() * r_Image.GetHeight());
+	const int Width = r_Image.GetWidth();
+	const int Height = r_Image.GetHeight();
 
-	for (s_RGBA& r_Pixel : m_ImageData)
-		r_Pixel = RenderPixel();
+	m_ImageData.resize(Width * Height);
+
+	for (int y = 0; y < Height; ++y)
+	{
+		for (int x = 0; x < Width; ++x)
+		{
+			const int PixelIndex = x + y * Width;
+
+			const glm::vec2 PixelUV
+				( static_cast<float>(x) / Width
+				, 1.0f - static_cast<float>(y) / Height
+				);
+
+			m_ImageData[PixelIndex] = RenderPixel(PixelUV);
+		}
+	}
 
 	r_Image.SetData(m_ImageData.data());
 }
 
 /*===========================================================================*/
-s_RGBA c_Renderer::RenderPixel()
+s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 {
-	return s_RGBA{.Value = (Walnut::Random::UInt() | 0xFF000000)};
+	s_RGBA Result;
+	Result.Channel.R = static_cast<uint8_t>(PixelUV.x * 255);
+	Result.Channel.G = static_cast<uint8_t>(PixelUV.y * 255);
+	Result.Channel.B = 0;
+	Result.Channel.A = 255;
+
+	return Result;
 }
 
 /*===========================================================================*/

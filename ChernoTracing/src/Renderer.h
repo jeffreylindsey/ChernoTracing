@@ -2,6 +2,8 @@
 
 #include "Color.h"
 
+#include <glm/glm.hpp>
+
 #include <vector>
 
 namespace Walnut
@@ -20,7 +22,7 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		s_RGBA RenderPixel();
+		s_RGBA RenderPixel(const glm::vec2& PixelUV);
 
 	//--- Private Members -----------------------------------------------------
 	private:
