@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Color.h"
+#include "Renderer.h"
 
 #include "Walnut/Image.h"
 #include "Walnut/Layer.h"
@@ -33,6 +33,8 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportHeight = 0;
 
 		Walnut::Image m_Image;
+
+		c_Renderer m_Renderer;
 
 		float m_LastRenderTime = 0.0f;
 };

@@ -1,7 +1,5 @@
 #include "MainLayer.h"
 
-#include "Renderer.h"
-
 #include "Walnut/Timer.h"
 
 #include "imgui.h"
@@ -65,8 +63,7 @@ void c_MainLayer::Render()
 
 	m_Image.Resize(m_ViewportWidth, m_ViewportHeight);
 
-	c_Renderer Renderer;
-	Renderer.Render(m_Image);
+	m_Renderer.Render(m_Image);
 
 	m_LastRenderTime = timer.ElapsedMillis();
 }
