@@ -1,6 +1,7 @@
 #include "MainLayer.h"
 
-#include "Walnut/Random.h"
+#include "Renderer.h"
+
 #include "Walnut/Timer.h"
 
 #include "imgui.h"
@@ -74,8 +75,8 @@ void c_MainLayer::Render()
 		m_ImageData.resize(m_ViewportWidth * m_ViewportHeight);
 	}
 
-	for (s_RGBA& r_Pixel : m_ImageData)
-		r_Pixel.Value = Walnut::Random::UInt() | 0xFF000000;
+	c_Renderer Renderer;
+	Renderer.Render(m_ImageData);
 
 	m_Image->SetData(m_ImageData.data());
 
