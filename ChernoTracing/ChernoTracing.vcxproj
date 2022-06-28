@@ -130,10 +130,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\MainLayer.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\WalnutApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MainLayer.h" />
+    <ClInclude Include="src\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Walnut\Walnut\Walnut.vcxproj">

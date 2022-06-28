@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClCompile Include="src\MainLayer.cpp" />
     <ClCompile Include="src\WalnutApp.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MainLayer.h" />
+    <ClInclude Include="src\Renderer.h" />
   </ItemGroup>
 </Project>
