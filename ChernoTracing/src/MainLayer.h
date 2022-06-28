@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Color.h"
+
 #include "Walnut/Image.h"
 #include "Walnut/Layer.h"
 
@@ -15,24 +17,6 @@ class c_MainLayer : public Walnut::Layer
 	public:
 		// Walnut::Layer
 		void OnUIRender() override;
-
-	//--- Private Types -------------------------------------------------------
-	private:
-		struct s_RGBA
-		{
-			union
-			{
-				uint32_t Value;
-				struct
-				{
-					uint8_t R;
-					uint8_t G;
-					uint8_t B;
-					uint8_t A;
-				} Channel;
-			};
-		};
-		static_assert(sizeof(s_RGBA) == sizeof(uint32_t));
 
 	//--- Private Methods -----------------------------------------------------
 	private:

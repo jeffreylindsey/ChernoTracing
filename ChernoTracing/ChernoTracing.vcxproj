@@ -134,6 +134,7 @@
     <ClCompile Include="src\WalnutApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\MainLayer.h" />
     <ClInclude Include="src\Renderer.h" />
   </ItemGroup>
