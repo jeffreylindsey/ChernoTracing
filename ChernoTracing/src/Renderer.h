@@ -18,6 +18,10 @@ class c_Renderer
 	public:
 		void Render(Walnut::Image& r_Image);
 
+	//--- Private Methods -----------------------------------------------------
+	private:
+		s_RGBA RenderPixel();
+
 	//--- Private Members -----------------------------------------------------
 	private:
 		std::vector<s_RGBA> m_ImageData;
