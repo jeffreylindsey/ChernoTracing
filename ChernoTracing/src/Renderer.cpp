@@ -89,8 +89,10 @@ s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		// at^2 + bt + c = 0
 		const float a = glm::dot(RayDirection, RayDirection);
 		const float b
-			= 2.0f * (glm::dot(RayOrigin, RayDirection)
-				- glm::dot(RayDirection, SphereOrigin));
+			= 2.0f
+				* (glm::dot(RayOrigin, RayDirection)
+					- glm::dot(RayDirection, SphereOrigin)
+				);
 		const float c
 			= glm::dot(RayOrigin, RayOrigin)
 				- 2.0f * glm::dot(RayOrigin, SphereOrigin)
