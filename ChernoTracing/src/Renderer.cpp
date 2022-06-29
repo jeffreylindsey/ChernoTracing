@@ -85,9 +85,17 @@ s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
 		constexpr float SphereRadius = 0.5f;
 
+		// These are the a, b, and c components of the quadratic formula.
+		// at^2 + bt + c = 0
 		const float a = glm::dot(RayDirection, RayDirection);
-		const float b = 2.0f * (glm::dot(RayOrigin, RayDirection) - glm::dot(RayDirection, SphereOrigin));
-		const float c = glm::dot(RayOrigin, RayOrigin) + glm::dot(SphereOrigin, SphereOrigin) - 2.0f * glm::dot(RayOrigin, SphereOrigin) - SphereRadius * SphereRadius;
+		const float b
+			= 2.0f * (glm::dot(RayOrigin, RayDirection)
+				- glm::dot(RayDirection, SphereOrigin));
+		const float c
+			= glm::dot(RayOrigin, RayOrigin)
+				- 2.0f * glm::dot(RayOrigin, SphereOrigin)
+				+ glm::dot(SphereOrigin, SphereOrigin)
+				- SphereRadius * SphereRadius;
 
 		const float Discriminant = b * b - 4.0f * a * c;
 
