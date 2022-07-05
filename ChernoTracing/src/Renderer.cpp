@@ -77,6 +77,8 @@ s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	Sr^2 = (t^2)(Rd*Rd) + 2t(Ro*Rd - Rd*So) + (Ro*Ro - 2(Ro*So) + So*So)
 	Sr^2 = (Rd*Rd)t^2 + 2(Ro*Rd - Rd*So)t + (Ro*Ro - 2(Ro*So) + So*So)
 	0 = (Rd*Rd)t^2 + 2(Ro*Rd - Rd*So)t + (Ro*Ro - 2(Ro*So) + So*So - Sr^2)
+	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + (Ro*Ro - 2(Ro*So) + So*So - Sr^2)
+	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
 
 	// Sphere
@@ -85,18 +87,14 @@ s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
 		constexpr float SphereRadius = 0.5f;
 
+		const glm::vec3 RaySphereOriginOffset = RayOrigin - SphereOrigin;
+
 		// These are the a, b, and c components of the quadratic formula.
 		// at^2 + bt + c = 0
 		const float a = glm::dot(RayDirection, RayDirection);
-		const float b
-			= 2.0f
-				* (glm::dot(RayOrigin, RayDirection)
-					- glm::dot(RayDirection, SphereOrigin)
-				);
+		const float b = 2.0f * glm::dot(RayDirection, RaySphereOriginOffset);
 		const float c
-			= glm::dot(RayOrigin, RayOrigin)
-				- 2.0f * glm::dot(RayOrigin, SphereOrigin)
-				+ glm::dot(SphereOrigin, SphereOrigin)
+			= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
 				- SphereRadius * SphereRadius;
 
 		const float Discriminant = b * b - 4.0f * a * c;
