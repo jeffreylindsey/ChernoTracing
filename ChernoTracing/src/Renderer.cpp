@@ -56,8 +56,31 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	const glm::vec3 LightDirection
 		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
-	// Ray: Point = Origin + Dirction*t, where t >= 0.
-	// Sphere: Point = Origin + ()*Radius
+	std::optional<glm::vec3> HitColor
+		= RenderSphere(RayOrigin, RayDirection, LightDirection);
+
+	glm::vec4 Result;
+	if (HitColor.has_value())
+		Result = glm::vec4(HitColor.value(), 1.0f);
+	else
+		Result = glm::vec4(PixelUV, 0.0f, 1.0f);
+
+	return Result;
+}
+
+/*===========================================================================*/
+std::optional<glm::vec3> c_Renderer::RenderSphere
+( const glm::vec3& RayOrigin
+, const glm::vec3& RayDirection
+, const glm::vec3& LightDirection
+) const
+{
+	constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
+	constexpr float SphereRadius = 0.5f;
+	constexpr glm::vec3 SphereColor(1.0f, 0.0f, 1.0f);
+
+	// Ray: Point = RayOrigin + t*RayDirction, where t >= 0
+	// Sphere: magnitude(Point - SphereOrigin) = SphereRadius
 	/*
 	Radius = ((Point.x - Origin.x)^2 + (Point.y - Origin.y)^2 + (Point.z - Origin.z)^2)^(1/2)
 	Radius^2 = (Point.x - Origin.x)^2 + (Point.y - Origin.y)^2 + (Point.z - Origin.z)^2
@@ -97,29 +120,6 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + (Ro*Ro - 2(Ro*So) + So*So - Sr^2)
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
-
-	std::optional<glm::vec3> HitColor
-		= RenderSphere(RayOrigin, RayDirection, LightDirection);
-
-	glm::vec4 Result;
-	if (HitColor.has_value())
-		Result = glm::vec4(HitColor.value(), 1.0f);
-	else
-		Result = glm::vec4(PixelUV, 0.0f, 1.0f);
-
-	return Result;
-}
-
-/*===========================================================================*/
-std::optional<glm::vec3> c_Renderer::RenderSphere
-( const glm::vec3& RayOrigin
-, const glm::vec3& RayDirection
-, const glm::vec3& LightDirection
-) const
-{
-	constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
-	constexpr float SphereRadius = 0.5f;
-	constexpr glm::vec3 SphereColor(1.0f, 0.0f, 1.0f);
 
 	const glm::vec3 RaySphereOriginOffset = RayOrigin - SphereOrigin;
 
