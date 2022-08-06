@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 
+#include <optional>
 #include <vector>
 
 namespace Walnut
@@ -23,6 +24,12 @@ class c_Renderer
 	//--- Private Methods -----------------------------------------------------
 	private:
 		glm::vec4 RenderPixel(const glm::vec2& PixelUV);
+
+		std::optional<glm::vec4> RenderSphere
+			( const glm::vec3& RayOrigin
+			, const glm::vec3& RayDirection
+			, const glm::vec3& LightDirection
+			) const;
 
 	//--- Private Members -----------------------------------------------------
 	private:

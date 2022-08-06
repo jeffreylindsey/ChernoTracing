@@ -3,8 +3,6 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
-#include <optional>
-
 /*===========================================================================*/
 s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 {
@@ -101,6 +99,30 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	*/
 
 	// Sphere
+	std::optional<glm::vec4> HitColor
+		= RenderSphere(RayOrigin, RayDirection, LightDirection);
+
+	glm::vec4 Result;
+	if (HitColor.has_value())
+		Result = HitColor.value();
+	else
+	{
+		Result.r = PixelUV.x;
+		Result.g = PixelUV.y;
+		Result.b = 0.0f;
+	}
+	Result.a = 1.0f;
+
+	return Result;
+}
+
+/*===========================================================================*/
+std::optional<glm::vec4> c_Renderer::RenderSphere
+( const glm::vec3& RayOrigin
+, const glm::vec3& RayDirection
+, const glm::vec3& LightDirection
+) const
+{
 	std::optional<glm::vec4> HitColor;
 	{
 		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
@@ -132,18 +154,7 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		}
 	}
 
-	glm::vec4 Result;
-	if (HitColor.has_value())
-		Result = HitColor.value();
-	else
-	{
-		Result.r = PixelUV.x;
-		Result.g = PixelUV.y;
-		Result.b = 0.0f;
-	}
-	Result.a = 1.0f;
-
-	return Result;
+	return HitColor;
 }
 
 /*===========================================================================*/
