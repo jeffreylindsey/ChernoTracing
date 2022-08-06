@@ -51,7 +51,7 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 /*===========================================================================*/
 glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 {
-	const glm::vec3 RayOrigin(0.0f, 0.0f, -2.0f);
+	const glm::vec3 RayOrigin(0.0f, 0.0f, -1.0f);
 	const glm::vec3
 		RayDirection(PixelUV.x * 2.0f - 1.0f, PixelUV.y * 2.0f - 1.0f, 1.0f);
 
@@ -99,6 +99,7 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 
 	// Sphere
 	std::optional<glm::vec3> HitPoint;
+	glm::vec3 HitNormal;
 	{
 		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
 		constexpr float SphereRadius = 0.5f;
@@ -121,12 +122,15 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 			const float t = (-b + glm::sqrt(Discriminant)) / (2.0f * a);
 
 			HitPoint = RayOrigin + t*RayDirection;
+
+			HitNormal = glm::normalize(HitPoint.value() - SphereOrigin);
+			HitNormal = HitNormal*0.5f + 0.5f;
 		}
 	}
 
 	glm::vec4 Result;
 	if (HitPoint.has_value())
-		Result = glm::vec4(HitPoint.value(), 1.0f);
+		Result = glm::vec4(HitNormal, 1.0f);
 	else
 	{
 		Result.r = PixelUV.x;
