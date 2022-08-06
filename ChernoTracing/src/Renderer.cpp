@@ -3,6 +3,20 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
+/*===========================================================================*/
+s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
+{
+	glm::clamp(FloatColor, glm::vec4(0.0), glm::vec4(1.0f));
+
+	s_RGBA Result;
+	Result.Channel.R = static_cast<uint8_t>(FloatColor.r * 255.0f);
+	Result.Channel.G = static_cast<uint8_t>(FloatColor.g * 255.0f);
+	Result.Channel.B = static_cast<uint8_t>(FloatColor.b * 255.0f);
+	Result.Channel.A = static_cast<uint8_t>(FloatColor.a * 255.0f);
+
+	return Result;
+}
+
 /*****************************************************************************/
 // c_Renderer
 
@@ -25,7 +39,7 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 				, 1.0f - static_cast<float>(y) / Height
 				);
 
-			m_ImageData[PixelIndex] = RenderPixel(PixelUV);
+			m_ImageData[PixelIndex] = FloatColorToRGBA(RenderPixel(PixelUV));
 		}
 	}
 
@@ -33,7 +47,7 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 }
 
 /*===========================================================================*/
-s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
+glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 {
 	const glm::vec3 RayOrigin(0.0f, 0.0f, -2.0f);
 	const glm::vec3
@@ -102,20 +116,20 @@ s_RGBA c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		HitSphere = (Discriminant >= 0.0f);
 	}
 
-	s_RGBA Result;
+	glm::vec4 Result;
 	if (HitSphere)
 	{
-		Result.Channel.R = 0;
-		Result.Channel.G = 0;
-		Result.Channel.B = 255;
+		Result.r = 0.0f;
+		Result.g = 0.0f;
+		Result.b = 1.0f;
 	}
 	else
 	{
-		Result.Channel.R = static_cast<uint8_t>(PixelUV.x * 255);
-		Result.Channel.G = static_cast<uint8_t>(PixelUV.y * 255);
-		Result.Channel.B = 0;
+		Result.r = PixelUV.x;
+		Result.g = PixelUV.y;
+		Result.b = 0.0f;
 	}
-	Result.Channel.A = 255;
+	Result.a = 1.0f;
 
 	return Result;
 }

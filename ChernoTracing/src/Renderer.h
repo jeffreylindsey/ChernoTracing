@@ -22,7 +22,7 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		s_RGBA RenderPixel(const glm::vec2& PixelUV);
+		glm::vec4 RenderPixel(const glm::vec2& PixelUV);
 
 	//--- Private Members -----------------------------------------------------
 	private:
