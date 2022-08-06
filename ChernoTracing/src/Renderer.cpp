@@ -55,6 +55,9 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	const glm::vec3
 		RayDirection(PixelUV.x * 2.0f - 1.0f, PixelUV.y * 2.0f - 1.0f, 1.0f);
 
+	const glm::vec3 LightDirection
+		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
+
 	// Ray: Point = Origin + Dirction*t, where t >= 0.
 	// Sphere: Point = Origin + ()*Radius
 	/*
@@ -119,18 +122,20 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 		if (Discriminant >= 0.0f)
 		{
 			// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
-			const float t = (-b + glm::sqrt(Discriminant)) / (2.0f * a);
+			const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
 			HitPoint = RayOrigin + t*RayDirection;
 
 			HitNormal = glm::normalize(HitPoint.value() - SphereOrigin);
-			HitNormal = HitNormal*0.5f + 0.5f;
 		}
 	}
 
 	glm::vec4 Result;
 	if (HitPoint.has_value())
-		Result = glm::vec4(HitNormal, 1.0f);
+	{
+		const glm::vec4 SphereColor(1.0f, 0.0f, 1.0f, 1.0f);
+		Result = SphereColor * glm::dot(HitNormal, -LightDirection);
+	}
 	else
 	{
 		Result.r = PixelUV.x;
