@@ -3,10 +3,12 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
+#include <optional>
+
 /*===========================================================================*/
 s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 {
-	glm::clamp(FloatColor, glm::vec4(0.0), glm::vec4(1.0f));
+	FloatColor = glm::clamp(FloatColor, glm::vec4(0.0), glm::vec4(1.0f));
 
 	s_RGBA Result;
 	Result.Channel.R = static_cast<uint8_t>(FloatColor.r * 255.0f);
@@ -96,7 +98,7 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	*/
 
 	// Sphere
-	bool HitSphere = false;
+	std::optional<glm::vec3> HitPoint;
 	{
 		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
 		constexpr float SphereRadius = 0.5f;
@@ -113,16 +115,18 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 
 		const float Discriminant = b * b - 4.0f * a * c;
 
-		HitSphere = (Discriminant >= 0.0f);
+		if (Discriminant >= 0.0f)
+		{
+			// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
+			const float t = (-b + glm::sqrt(Discriminant)) / (2.0f * a);
+
+			HitPoint = RayOrigin + t*RayDirection;
+		}
 	}
 
 	glm::vec4 Result;
-	if (HitSphere)
-	{
-		Result.r = 0.0f;
-		Result.g = 0.0f;
-		Result.b = 1.0f;
-	}
+	if (HitPoint.has_value())
+		Result = glm::vec4(HitPoint.value(), 1.0f);
 	else
 	{
 		Result.r = PixelUV.x;
