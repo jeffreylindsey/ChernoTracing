@@ -98,63 +98,52 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
 
-	// Sphere
-	std::optional<glm::vec4> HitColor
+	std::optional<glm::vec3> HitColor
 		= RenderSphere(RayOrigin, RayDirection, LightDirection);
 
 	glm::vec4 Result;
 	if (HitColor.has_value())
-		Result = HitColor.value();
+		Result = glm::vec4(HitColor.value(), 1.0f);
 	else
-	{
-		Result.r = PixelUV.x;
-		Result.g = PixelUV.y;
-		Result.b = 0.0f;
-	}
-	Result.a = 1.0f;
+		Result = glm::vec4(PixelUV, 0.0f, 1.0f);
 
 	return Result;
 }
 
 /*===========================================================================*/
-std::optional<glm::vec4> c_Renderer::RenderSphere
+std::optional<glm::vec3> c_Renderer::RenderSphere
 ( const glm::vec3& RayOrigin
 , const glm::vec3& RayDirection
 , const glm::vec3& LightDirection
 ) const
 {
-	std::optional<glm::vec4> HitColor;
-	{
-		constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
-		constexpr float SphereRadius = 0.5f;
+	constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
+	constexpr float SphereRadius = 0.5f;
+	constexpr glm::vec3 SphereColor(1.0f, 0.0f, 1.0f);
 
-		const glm::vec3 RaySphereOriginOffset = RayOrigin - SphereOrigin;
+	const glm::vec3 RaySphereOriginOffset = RayOrigin - SphereOrigin;
 
-		// These are the a, b, and c components of the quadratic formula.
-		// at^2 + bt + c = 0
-		const float a = glm::dot(RayDirection, RayDirection);
-		const float b = 2.0f * glm::dot(RayDirection, RaySphereOriginOffset);
-		const float c
-			= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
-				- SphereRadius * SphereRadius;
+	// These are the a, b, and c components of the quadratic formula.
+	// at^2 + bt + c = 0
+	const float a = glm::dot(RayDirection, RayDirection);
+	const float b = 2.0f * glm::dot(RayDirection, RaySphereOriginOffset);
+	const float c
+		= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
+			- SphereRadius * SphereRadius;
 
-		const float Discriminant = b * b - 4.0f * a * c;
+	const float Discriminant = b * b - 4.0f * a * c;
 
-		if (Discriminant >= 0.0f)
-		{
-			// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
-			const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
+	if (Discriminant < 0.0f)
+		return std::nullopt;  // No hit.
 
-			const glm::vec3 HitPoint = RayOrigin + t*RayDirection;
+	// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
+	const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
-			const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
+	const glm::vec3 HitPoint = RayOrigin + t*RayDirection;
 
-			const glm::vec4 SphereColor(1.0f, 0.0f, 1.0f, 1.0f);
-			HitColor = SphereColor * glm::dot(HitNormal, -LightDirection);
-		}
-	}
+	const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
 
-	return HitColor;
+	return SphereColor * glm::dot(HitNormal, -LightDirection);
 }
 
 /*===========================================================================*/
