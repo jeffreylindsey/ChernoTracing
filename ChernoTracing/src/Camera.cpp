@@ -23,7 +23,7 @@ c_Camera::c_Camera(float VerticalFOV, float NearClip, float FarClip)
 void c_Camera::OnUpdate(float TimeDelta)
 {
 	glm::vec2 MousePos = Input::GetMousePosition();
-	glm::vec2 Delta = (MousePos - m_LastMousePosition) * 0.002f;
+	glm::vec2 Delta = (MousePos - m_LastMousePosition) * 0.002f;  // TODO: Combine this scaler into m_RotationSpeed.
 	m_LastMousePosition = MousePos;
 
 	if (!Input::IsMouseButtonDown(MouseButton::Right))
@@ -36,51 +36,49 @@ void c_Camera::OnUpdate(float TimeDelta)
 
 	bool Moved = false;
 
-	constexpr glm::vec3 UpDirection(0.0f, 1.0f, 0.0f);
-	glm::vec3 RightDirection = glm::cross(m_ForwardDirection, UpDirection);
-
-	float Speed = 5.0f;
+	constexpr glm::vec3 UpDirection = m_UpAxis;  // TODO: Need to calculate up direction based on forward direction.
+	glm::vec3 RightDirection = glm::cross(m_ForwardDirection, m_UpAxis);
 
 	// Movement
 	if (Input::IsKeyDown(KeyCode::W))
 	{
-		m_Position += m_ForwardDirection * Speed * TimeDelta;
+		m_Position += m_ForwardDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::S))
 	{
-		m_Position -= m_ForwardDirection * Speed * TimeDelta;
+		m_Position -= m_ForwardDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	if (Input::IsKeyDown(KeyCode::A))
 	{
-		m_Position -= RightDirection * Speed * TimeDelta;
+		m_Position -= RightDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::D))
 	{
-		m_Position += RightDirection * Speed * TimeDelta;
+		m_Position += RightDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	if (Input::IsKeyDown(KeyCode::Q))
 	{
-		m_Position -= UpDirection * Speed * TimeDelta;
+		m_Position -= UpDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::E))
 	{
-		m_Position += UpDirection * Speed * TimeDelta;
+		m_Position += UpDirection * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 
 	// Rotation
 	if (Delta.x != 0.0f || Delta.y != 0.0f)
 	{
-		float PitchDelta = Delta.y * GetRotationSpeed();
-		float YawDelta = Delta.x * GetRotationSpeed();
+		float PitchDelta = Delta.y * m_RotationSpeed;
+		float YawDelta = Delta.x * m_RotationSpeed;
 
 		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-PitchDelta, RightDirection),
-			glm::angleAxis(-YawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+			glm::angleAxis(-YawDelta, m_UpAxis)));
 		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
 		Moved = true;
@@ -107,12 +105,6 @@ void c_Camera::OnResize(uint32_t Width, uint32_t Height)
 }
 
 /*===========================================================================*/
-float c_Camera::GetRotationSpeed()
-{
-	return 0.3f;
-}
-
-/*===========================================================================*/
 void c_Camera::RecalculateProjection()
 {
 	m_Projection = glm::perspectiveFov(glm::radians(m_VerticalFOV), (float)m_ViewportWidth, (float)m_ViewportHeight, m_NearClip, m_FarClip);
@@ -122,7 +114,7 @@ void c_Camera::RecalculateProjection()
 /*===========================================================================*/
 void c_Camera::RecalculateView()
 {
-	m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, glm::vec3(0, 1, 0));
+	m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, m_UpAxis);
 	m_InverseView = glm::inverse(m_View);
 }
 

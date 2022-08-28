@@ -25,7 +25,12 @@ class c_Camera
 
 		const std::vector<glm::vec3>& GetRayDirections() const { return m_RayDirections; }
 
-		float GetRotationSpeed();
+	//--- Private Static Members ----------------------------------------------
+	private:
+		static constexpr glm::vec3 m_UpAxis = glm::vec3(0.f, 1.0f, 0.0f);
+
+		static constexpr float m_MovementSpeed = 5.0f;
+		static constexpr float m_RotationSpeed = 0.3f;
 
 	//--- Private Methods -----------------------------------------------------
 	private:
