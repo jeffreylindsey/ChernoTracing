@@ -7,6 +7,8 @@
 #include <optional>
 #include <vector>
 
+class c_Camera;
+
 namespace Walnut
 {
 	class Image;
@@ -19,7 +21,7 @@ class c_Renderer
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		void Render(Walnut::Image& r_Image);
+		void Render(Walnut::Image& r_Image, const c_Camera& Camera);
 
 	//--- Private Methods -----------------------------------------------------
 	private:

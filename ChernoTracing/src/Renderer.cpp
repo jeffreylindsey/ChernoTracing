@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include "Camera.h"
+
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
@@ -21,7 +23,7 @@ s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 // c_Renderer
 
 /*===========================================================================*/
-void c_Renderer::Render(Walnut::Image& r_Image)
+void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 {
 	const int Width = r_Image.GetWidth();
 	const int Height = r_Image.GetHeight();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "Renderer.h"
 
 #include "Walnut/Image.h"
@@ -18,6 +19,7 @@ class c_MainLayer : public Walnut::Layer
 		c_MainLayer();
 
 		// Walnut::Layer
+		void OnUpdate(float ts) override;
 		void OnUIRender() override;
 
 	//--- Private Methods -----------------------------------------------------
@@ -33,6 +35,8 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportHeight = 0;
 
 		Walnut::Image m_Image;
+
+		c_Camera m_Camera;
 
 		c_Renderer m_Renderer;
 
