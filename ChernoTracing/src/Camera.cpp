@@ -26,6 +26,48 @@ c_Camera::c_Camera
 }
 
 /*===========================================================================*/
+const glm::mat4& c_Camera::GetProjection() const
+{
+	return m_Projection;
+}
+
+/*===========================================================================*/
+const glm::mat4& c_Camera::GetInverseProjection() const
+{
+	return m_InverseProjection;
+}
+
+/*===========================================================================*/
+const glm::mat4& c_Camera::GetView() const
+{
+	return m_View;
+}
+
+/*===========================================================================*/
+const glm::mat4& c_Camera::GetInverseView() const
+{
+	return m_InverseView;
+}
+
+/*===========================================================================*/
+const glm::vec3& c_Camera::GetPosition() const
+{
+	return m_Position;
+}
+
+/*===========================================================================*/
+const glm::vec3& c_Camera::GetDirection() const
+{
+	return m_ForwardDirection;
+}
+
+/*===========================================================================*/
+const std::vector<glm::vec3>& c_Camera::GetRayDirections() const
+{
+	return m_RayDirections;
+}
+
+/*===========================================================================*/
 void c_Camera::OnUpdate(const float TimeDelta)
 {
 	const glm::vec2 MousePos = Input::GetMousePosition();

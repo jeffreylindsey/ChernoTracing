@@ -16,15 +16,15 @@ class c_Camera
 			, const float FarClip
 			);
 
-		const glm::mat4& GetProjection() const { return m_Projection; }
-		const glm::mat4& GetInverseProjection() const { return m_InverseProjection; }
-		const glm::mat4& GetView() const { return m_View; }
-		const glm::mat4& GetInverseView() const { return m_InverseView; }
-	
-		const glm::vec3& GetPosition() const { return m_Position; }
-		const glm::vec3& GetDirection() const { return m_ForwardDirection; }
+		const glm::mat4& GetProjection() const;
+		const glm::mat4& GetInverseProjection() const;
+		const glm::mat4& GetView() const;
+		const glm::mat4& GetInverseView() const;
 
-		const std::vector<glm::vec3>& GetRayDirections() const { return m_RayDirections; }
+		const glm::vec3& GetPosition() const;
+		const glm::vec3& GetDirection() const;
+
+		const std::vector<glm::vec3>& GetRayDirections() const;
 
 		void OnUpdate(const float TimeDelta);
 		void OnResize(const uint32_t Width, const uint32_t Height);
