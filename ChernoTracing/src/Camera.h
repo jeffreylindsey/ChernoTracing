@@ -10,10 +10,14 @@ class c_Camera
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		c_Camera(float VerticalFOV, float NearClip, float FarClip);
+		c_Camera
+			( const float VerticalFOV
+			, const float NearClip
+			, const float FarClip
+			);
 
-		void OnUpdate(float TimeDelta);
-		void OnResize(uint32_t Width, uint32_t Height);
+		void OnUpdate(const float TimeDelta);
+		void OnResize(const uint32_t Width, const uint32_t Height);
 
 		const glm::mat4& GetProjection() const { return m_Projection; }
 		const glm::mat4& GetInverseProjection() const { return m_InverseProjection; }
@@ -40,24 +44,25 @@ class c_Camera
 
 	//--- Private Members -----------------------------------------------------
 	private:
-		glm::mat4 m_Projection{ 1.0f };
-		glm::mat4 m_View{ 1.0f };
-		glm::mat4 m_InverseProjection{ 1.0f };
-		glm::mat4 m_InverseView{ 1.0f };
+		glm::mat4 m_Projection = glm::mat4(1.0f);
+		glm::mat4 m_View = glm::mat4(1.0f);
+		glm::mat4 m_InverseProjection = glm::mat4(1.0f);
+		glm::mat4 m_InverseView = glm::mat4(1.0f);
 
 		float m_VerticalFOV = 45.0f;
 		float m_NearClip = 0.1f;
 		float m_FarClip = 100.0f;
 
-		glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
-		glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
+		glm::vec3 m_Position = {};
+		glm::vec3 m_ForwardDirection = {};
 
 		// Cached ray directions
 		std::vector<glm::vec3> m_RayDirections;
 
-		glm::vec2 m_LastMousePosition{ 0.0f, 0.0f };
+		glm::vec2 m_LastMousePosition = {};
 
-		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+		uint32_t m_ViewportWidth = 0;
+		uint32_t m_ViewportHeight = 0;
 };
 
 /*****************************************************************************/

@@ -12,15 +12,21 @@ using namespace Walnut;
 // c_Camera
 
 /*===========================================================================*/
-c_Camera::c_Camera(float VerticalFOV, float NearClip, float FarClip)
-	: m_VerticalFOV(VerticalFOV), m_NearClip(NearClip), m_FarClip(FarClip)
+c_Camera::c_Camera
+( const float VerticalFOV
+, const float NearClip
+, const float FarClip
+)
+	: m_VerticalFOV(VerticalFOV)
+	, m_NearClip(NearClip)
+	, m_FarClip(FarClip)
+	, m_Position(0, 0, 3)
+	, m_ForwardDirection(0, 0, -1)
 {
-	m_ForwardDirection = glm::vec3(0, 0, -1);
-	m_Position = glm::vec3(0, 0, 3);
 }
 
 /*===========================================================================*/
-void c_Camera::OnUpdate(float TimeDelta)
+void c_Camera::OnUpdate(const float TimeDelta)
 {
 	const glm::vec2 MousePos = Input::GetMousePosition();
 	const glm::vec2 MouseDelta = MousePos - m_LastMousePosition;
@@ -36,8 +42,10 @@ void c_Camera::OnUpdate(float TimeDelta)
 
 	bool Moved = false;
 
-	constexpr glm::vec3 UpDirection = m_UpAxis;  // TODO: Need to calculate up direction based on forward direction.
-	glm::vec3 RightDirection = glm::cross(m_ForwardDirection, m_UpAxis);
+	// TODO: Need to calculate up direction based on forward direction.
+	constexpr glm::vec3 UpDirection = m_UpAxis;
+
+	const glm::vec3 RightDirection = glm::cross(m_ForwardDirection, m_UpAxis);
 
 	// Movement
 	if (Input::IsKeyDown(KeyCode::W))
@@ -74,11 +82,17 @@ void c_Camera::OnUpdate(float TimeDelta)
 	// Rotation
 	if (MouseDelta != glm::vec2{0.0f, 0.0f})
 	{
-		float PitchDelta = MouseDelta.y * m_RotationSpeed;
-		float YawDelta = MouseDelta.x * m_RotationSpeed;
+		const float PitchDelta = MouseDelta.y * m_RotationSpeed;
+		const float YawDelta = MouseDelta.x * m_RotationSpeed;
 
-		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-PitchDelta, RightDirection),
-			glm::angleAxis(-YawDelta, m_UpAxis)));
+		const glm::quat q
+			= glm::normalize
+				( glm::cross
+					( glm::angleAxis(-PitchDelta, RightDirection)
+					, glm::angleAxis(-YawDelta, m_UpAxis)
+					)
+				);
+
 		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
 		Moved = true;
@@ -92,7 +106,7 @@ void c_Camera::OnUpdate(float TimeDelta)
 }
 
 /*===========================================================================*/
-void c_Camera::OnResize(uint32_t Width, uint32_t Height)
+void c_Camera::OnResize(const uint32_t Width, const uint32_t Height)
 {
 	if (Width == m_ViewportWidth && Height == m_ViewportHeight)
 		return;
@@ -107,7 +121,15 @@ void c_Camera::OnResize(uint32_t Width, uint32_t Height)
 /*===========================================================================*/
 void c_Camera::RecalculateProjection()
 {
-	m_Projection = glm::perspectiveFov(glm::radians(m_VerticalFOV), (float)m_ViewportWidth, (float)m_ViewportHeight, m_NearClip, m_FarClip);
+	m_Projection
+		= glm::perspectiveFov
+			( glm::radians(m_VerticalFOV)
+			, static_cast<float>(m_ViewportWidth)
+			, static_cast<float>(m_ViewportHeight)
+			, m_NearClip
+			, m_FarClip
+			);
+
 	m_InverseProjection = glm::inverse(m_Projection);
 }
 
@@ -123,15 +145,24 @@ void c_Camera::RecalculateRayDirections()
 {
 	m_RayDirections.resize(m_ViewportWidth * m_ViewportHeight);
 
-	for (uint32_t y = 0; y < m_ViewportHeight; y++)
+	for (uint32_t y = 0; y < m_ViewportHeight; ++y)
 	{
-		for (uint32_t x = 0; x < m_ViewportWidth; x++)
+		for (uint32_t x = 0; x < m_ViewportWidth; ++x)
 		{
-			glm::vec2 PixelUV = { (float)x / (float)m_ViewportWidth, (float)y / (float)m_ViewportHeight };
+			glm::vec2 PixelUV
+				( static_cast<float>(x) / m_ViewportWidth
+				, static_cast<float>(y) / m_ViewportHeight
+				);
 			PixelUV = PixelUV * 2.0f - 1.0f; // -1 -> 1
 
-			glm::vec4 Target = m_InverseProjection * glm::vec4(PixelUV.x, PixelUV.y, 1, 1);
-			glm::vec3 RayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(Target) / Target.w), 0)); // World space
+			const glm::vec4 Target
+				= m_InverseProjection * glm::vec4(PixelUV.x, PixelUV.y, 1, 1);
+
+			// World space
+			const glm::vec3 RayDirection
+				= m_InverseView
+					* glm::vec4(glm::normalize(glm::vec3(Target) / Target.w), 0);
+
 			m_RayDirections[x + y * m_ViewportWidth] = RayDirection;
 		}
 	}
