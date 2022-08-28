@@ -22,8 +22,8 @@ c_Camera::c_Camera(float VerticalFOV, float NearClip, float FarClip)
 /*===========================================================================*/
 void c_Camera::OnUpdate(float TimeDelta)
 {
-	glm::vec2 MousePos = Input::GetMousePosition();
-	glm::vec2 Delta = (MousePos - m_LastMousePosition) * 0.002f;  // TODO: Combine this scaler into m_RotationSpeed.
+	const glm::vec2 MousePos = Input::GetMousePosition();
+	const glm::vec2 MouseDelta = MousePos - m_LastMousePosition;
 	m_LastMousePosition = MousePos;
 
 	if (!Input::IsMouseButtonDown(MouseButton::Right))
@@ -72,10 +72,10 @@ void c_Camera::OnUpdate(float TimeDelta)
 	}
 
 	// Rotation
-	if (Delta.x != 0.0f || Delta.y != 0.0f)
+	if (MouseDelta != glm::vec2{0.0f, 0.0f})
 	{
-		float PitchDelta = Delta.y * m_RotationSpeed;
-		float YawDelta = Delta.x * m_RotationSpeed;
+		float PitchDelta = MouseDelta.y * m_RotationSpeed;
+		float YawDelta = MouseDelta.x * m_RotationSpeed;
 
 		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-PitchDelta, RightDirection),
 			glm::angleAxis(-YawDelta, m_UpAxis)));

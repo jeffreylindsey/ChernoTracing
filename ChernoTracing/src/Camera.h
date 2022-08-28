@@ -30,7 +30,7 @@ class c_Camera
 		static constexpr glm::vec3 m_UpAxis = glm::vec3(0.f, 1.0f, 0.0f);
 
 		static constexpr float m_MovementSpeed = 5.0f;
-		static constexpr float m_RotationSpeed = 0.3f;
+		static constexpr float m_RotationSpeed = 0.0006f;
 
 	//--- Private Methods -----------------------------------------------------
 	private:
