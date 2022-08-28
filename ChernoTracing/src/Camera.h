@@ -10,10 +10,10 @@ class c_Camera
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		c_Camera(float verticalFOV, float nearClip, float farClip);
+		c_Camera(float VerticalFOV, float NearClip, float FarClip);
 
-		void OnUpdate(float ts);
-		void OnResize(uint32_t width, uint32_t height);
+		void OnUpdate(float TimeDelta);
+		void OnResize(uint32_t Width, uint32_t Height);
 
 		const glm::mat4& GetProjection() const { return m_Projection; }
 		const glm::mat4& GetInverseProjection() const { return m_InverseProjection; }
