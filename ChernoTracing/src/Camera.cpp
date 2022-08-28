@@ -1,21 +1,26 @@
 #include "Camera.h"
 
+#include "Walnut/Input/Input.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Walnut/Input/Input.h"
-
 using namespace Walnut;
 
-Camera::Camera(float verticalFOV, float nearClip, float farClip)
+/*****************************************************************************/
+// c_Camera
+
+/*===========================================================================*/
+c_Camera::c_Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0, 0, -1);
 	m_Position = glm::vec3(0, 0, 3);
 }
 
-void Camera::OnUpdate(float ts)
+/*===========================================================================*/
+void c_Camera::OnUpdate(float ts)
 {
 	glm::vec2 mousePos = Input::GetMousePosition();
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
@@ -88,7 +93,8 @@ void Camera::OnUpdate(float ts)
 	}
 }
 
-void Camera::OnResize(uint32_t width, uint32_t height)
+/*===========================================================================*/
+void c_Camera::OnResize(uint32_t width, uint32_t height)
 {
 	if (width == m_ViewportWidth && height == m_ViewportHeight)
 		return;
@@ -100,24 +106,28 @@ void Camera::OnResize(uint32_t width, uint32_t height)
 	RecalculateRayDirections();
 }
 
-float Camera::GetRotationSpeed()
+/*===========================================================================*/
+float c_Camera::GetRotationSpeed()
 {
 	return 0.3f;
 }
 
-void Camera::RecalculateProjection()
+/*===========================================================================*/
+void c_Camera::RecalculateProjection()
 {
 	m_Projection = glm::perspectiveFov(glm::radians(m_VerticalFOV), (float)m_ViewportWidth, (float)m_ViewportHeight, m_NearClip, m_FarClip);
 	m_InverseProjection = glm::inverse(m_Projection);
 }
 
-void Camera::RecalculateView()
+/*===========================================================================*/
+void c_Camera::RecalculateView()
 {
 	m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, glm::vec3(0, 1, 0));
 	m_InverseView = glm::inverse(m_View);
 }
 
-void Camera::RecalculateRayDirections()
+/*===========================================================================*/
+void c_Camera::RecalculateRayDirections()
 {
 	m_RayDirections.resize(m_ViewportWidth * m_ViewportHeight);
 
@@ -134,3 +144,5 @@ void Camera::RecalculateRayDirections()
 		}
 	}
 }
+
+/*===========================================================================*/
