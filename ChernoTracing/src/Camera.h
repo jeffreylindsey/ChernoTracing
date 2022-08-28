@@ -10,12 +10,6 @@ class c_Camera
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		c_Camera
-			( const float VerticalFOV
-			, const float NearClip
-			, const float FarClip
-			);
-
 		const glm::mat4& GetProjection() const;
 		const glm::mat4& GetInverseProjection() const;
 		const glm::mat4& GetView() const;
@@ -33,6 +27,10 @@ class c_Camera
 	private:
 		static constexpr glm::vec3 m_UpAxis = glm::vec3(0.f, 1.0f, 0.0f);
 
+		static constexpr float m_VerticalFOV = 45.0f;  // TODO: Clarify as angle in degrees.
+		static constexpr float m_NearClip = 0.1f;
+		static constexpr float m_FarClip = 100.0f;
+
 		static constexpr float m_MovementSpeed = 5.0f;
 		static constexpr float m_RotationSpeed = 0.0006f;
 
@@ -44,10 +42,6 @@ class c_Camera
 
 	//--- Private Members -----------------------------------------------------
 	private:
-		float m_VerticalFOV = 45.0f;
-		float m_NearClip = 0.1f;
-		float m_FarClip = 100.0f;
-
 		uint32_t m_ViewportWidth = 0;
 		uint32_t m_ViewportHeight = 0;
 
@@ -57,8 +51,8 @@ class c_Camera
 		glm::mat4 m_View = glm::mat4(1.0f);
 		glm::mat4 m_InverseView = glm::mat4(1.0f);
 
-		glm::vec3 m_Position = {};
-		glm::vec3 m_ForwardDirection = {};
+		glm::vec3 m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 m_ForwardDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 
 		// Cached ray directions
 		std::vector<glm::vec3> m_RayDirections;

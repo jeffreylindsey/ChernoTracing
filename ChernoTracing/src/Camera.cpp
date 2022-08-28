@@ -12,20 +12,6 @@ using namespace Walnut;
 // c_Camera
 
 /*===========================================================================*/
-c_Camera::c_Camera
-( const float VerticalFOV
-, const float NearClip
-, const float FarClip
-)
-	: m_VerticalFOV(VerticalFOV)
-	, m_NearClip(NearClip)
-	, m_FarClip(FarClip)
-	, m_Position(0, 0, 3)
-	, m_ForwardDirection(0, 0, -1)
-{
-}
-
-/*===========================================================================*/
 const glm::mat4& c_Camera::GetProjection() const
 {
 	return m_Projection;
