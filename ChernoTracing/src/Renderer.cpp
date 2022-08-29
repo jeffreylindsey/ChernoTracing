@@ -25,24 +25,21 @@ s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 /*===========================================================================*/
 void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 {
-	const int Width = r_Image.GetWidth();
-	const int Height = r_Image.GetHeight();
+	const auto& RayDirections = Camera.GetRayDirections();
 
-	m_ImageData.resize(Width * Height);
+	// This function assumes there is one ray direction per pixel.
+	assert(RayDirections.size() == r_Image.GetWidth() * r_Image.GetHeight());
 
-	for (int y = 0; y < Height; ++y)
+	m_ImageData.clear();
+	m_ImageData.reserve(RayDirections.size());
+
+	for (const glm::vec3& RayDirection : RayDirections)
 	{
-		for (int x = 0; x < Width; ++x)
-		{
-			const int PixelIndex = x + y * Width;
-
-			const glm::vec3 RayDirection = Camera.GetRayDirections()[PixelIndex];
-
-			m_ImageData[PixelIndex]
-				= FloatColorToRGBA
-					( RenderPixel({Camera.GetPosition(), RayDirection})
-					);
-		}
+		m_ImageData.push_back
+			( FloatColorToRGBA
+				( RenderPixel({Camera.GetPosition(), RayDirection})
+				)
+			);
 	}
 
 	r_Image.SetData(m_ImageData.data());
