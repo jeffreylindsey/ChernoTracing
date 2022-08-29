@@ -71,6 +71,8 @@ void c_MainLayer::Render()
 
 	m_Image.Resize(m_ViewportWidth, m_ViewportHeight);
 
+	m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
+
 	m_Renderer.Render(m_Image, m_Camera);
 
 	m_LastRenderTime = timer.ElapsedMillis();

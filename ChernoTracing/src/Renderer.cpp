@@ -41,15 +41,12 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 				, 1.0f - static_cast<float>(y) / Height
 				);
 
-			const glm::vec3 RayOrigin(0.0f, 0.0f, -1.0f);
-			const glm::vec3 RayDirection
-				( PixelUV.x * 2.0f - 1.0f
-				, PixelUV.y * 2.0f - 1.0f
-				, 1.0f
-				);
+			const glm::vec3 RayDirection = Camera.GetRayDirections()[PixelIndex];
 
 			m_ImageData[PixelIndex]
-				= FloatColorToRGBA(RenderPixel(RayOrigin, RayDirection));
+				= FloatColorToRGBA
+					( RenderPixel(Camera.GetPosition(), RayDirection)
+					);
 		}
 	}
 
