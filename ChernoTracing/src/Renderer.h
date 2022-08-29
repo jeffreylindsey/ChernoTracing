@@ -25,7 +25,10 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec4 RenderPixel(const glm::vec2& PixelUV);
+		glm::vec4 RenderPixel
+			( const glm::vec3& RayOrigin
+			, const glm::vec3& RayDirection
+			);
 
 		std::optional<glm::vec3> RenderSphere
 			( const glm::vec3& RayOrigin

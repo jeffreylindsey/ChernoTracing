@@ -41,7 +41,15 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 				, 1.0f - static_cast<float>(y) / Height
 				);
 
-			m_ImageData[PixelIndex] = FloatColorToRGBA(RenderPixel(PixelUV));
+			const glm::vec3 RayOrigin(0.0f, 0.0f, -1.0f);
+			const glm::vec3 RayDirection
+				( PixelUV.x * 2.0f - 1.0f
+				, PixelUV.y * 2.0f - 1.0f
+				, 1.0f
+				);
+
+			m_ImageData[PixelIndex]
+				= FloatColorToRGBA(RenderPixel(RayOrigin, RayDirection));
 		}
 	}
 
@@ -49,12 +57,11 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 }
 
 /*===========================================================================*/
-glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
+glm::vec4 c_Renderer::RenderPixel
+( const glm::vec3& RayOrigin
+, const glm::vec3& RayDirection
+)
 {
-	const glm::vec3 RayOrigin(0.0f, 0.0f, -1.0f);
-	const glm::vec3
-		RayDirection(PixelUV.x * 2.0f - 1.0f, PixelUV.y * 2.0f - 1.0f, 1.0f);
-
 	const glm::vec3 LightDirection
 		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
@@ -65,7 +72,7 @@ glm::vec4 c_Renderer::RenderPixel(const glm::vec2& PixelUV)
 	if (HitColor.has_value())
 		Result = glm::vec4(HitColor.value(), 1.0f);
 	else
-		Result = glm::vec4(PixelUV, 0.0f, 1.0f);
+		Result = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	return Result;
 }
