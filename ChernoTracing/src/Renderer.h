@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Color.h"
+#include "Ray.h"
 
 #include <glm/glm.hpp>
 
@@ -25,14 +26,10 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec4 RenderPixel
-			( const glm::vec3& RayOrigin
-			, const glm::vec3& RayDirection
-			);
+		glm::vec4 RenderPixel(const s_Ray& Ray);
 
 		std::optional<glm::vec3> RenderSphere
-			( const glm::vec3& RayOrigin
-			, const glm::vec3& RayDirection
+			( const s_Ray& Ray
 			, const glm::vec3& LightDirection
 			) const;
 

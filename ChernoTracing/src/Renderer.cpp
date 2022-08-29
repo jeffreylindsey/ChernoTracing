@@ -40,7 +40,7 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 
 			m_ImageData[PixelIndex]
 				= FloatColorToRGBA
-					( RenderPixel(Camera.GetPosition(), RayDirection)
+					( RenderPixel({Camera.GetPosition(), RayDirection})
 					);
 		}
 	}
@@ -49,16 +49,12 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 }
 
 /*===========================================================================*/
-glm::vec4 c_Renderer::RenderPixel
-( const glm::vec3& RayOrigin
-, const glm::vec3& RayDirection
-)
+glm::vec4 c_Renderer::RenderPixel(const s_Ray& Ray)
 {
 	const glm::vec3 LightDirection
 		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
-	std::optional<glm::vec3> HitColor
-		= RenderSphere(RayOrigin, RayDirection, LightDirection);
+	std::optional<glm::vec3> HitColor = RenderSphere(Ray, LightDirection);
 
 	glm::vec4 Result;
 	if (HitColor.has_value())
@@ -71,8 +67,7 @@ glm::vec4 c_Renderer::RenderPixel
 
 /*===========================================================================*/
 std::optional<glm::vec3> c_Renderer::RenderSphere
-( const glm::vec3& RayOrigin
-, const glm::vec3& RayDirection
+( const s_Ray& Ray
 , const glm::vec3& LightDirection
 ) const
 {
@@ -122,12 +117,12 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
 
-	const glm::vec3 RaySphereOriginOffset = RayOrigin - SphereOrigin;
+	const glm::vec3 RaySphereOriginOffset = Ray.Origin - SphereOrigin;
 
 	// These are the a, b, and c components of the quadratic formula.
 	// at^2 + bt + c = 0
-	const float a = glm::dot(RayDirection, RayDirection);
-	const float b = 2.0f * glm::dot(RayDirection, RaySphereOriginOffset);
+	const float a = glm::dot(Ray.Direction, Ray.Direction);
+	const float b = 2.0f * glm::dot(Ray.Direction, RaySphereOriginOffset);
 	const float c
 		= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
 			- SphereRadius * SphereRadius;
@@ -140,7 +135,7 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 	// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
 	const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
-	const glm::vec3 HitPoint = RayOrigin + t*RayDirection;
+	const glm::vec3 HitPoint = Ray.Origin + t*Ray.Direction;
 
 	const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
 
