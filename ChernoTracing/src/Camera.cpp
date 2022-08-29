@@ -79,9 +79,6 @@ void c_Camera::OnUpdate(const float TimeDelta)
 
 	bool Moved = false;
 
-	// TODO: Need to calculate up direction based on forward direction.
-	constexpr glm::vec3 UpDirection = m_UpAxis;
-
 	const glm::vec3 RightDirection = glm::cross(m_ForwardDirection, m_UpAxis);
 
 	// Movement
@@ -107,12 +104,12 @@ void c_Camera::OnUpdate(const float TimeDelta)
 	}
 	if (Input::IsKeyDown(KeyCode::Q))
 	{
-		m_Position -= UpDirection * m_MovementSpeed * TimeDelta;
+		m_Position -= m_UpAxis * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::E))
 	{
-		m_Position += UpDirection * m_MovementSpeed * TimeDelta;
+		m_Position += m_UpAxis * m_MovementSpeed * TimeDelta;
 		Moved = true;
 	}
 
