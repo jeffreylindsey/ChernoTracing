@@ -34,7 +34,7 @@ class c_Camera
 		static constexpr float m_FarClip = 100.0f;
 
 		static constexpr float m_MovementSpeed = 5.0f;
-		static constexpr float m_RotationSpeed = 0.0006f;
+		static constexpr float m_RotationSpeed = 0.003f;
 
 	//--- Private Methods -----------------------------------------------------
 	private:
