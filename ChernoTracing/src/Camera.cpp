@@ -54,6 +54,15 @@ const std::vector<glm::vec3>& c_Camera::GetRayDirections() const
 }
 
 /*===========================================================================*/
+void c_Camera::SetPosition(const glm::vec3& NewPosition)
+{
+	m_Position = NewPosition;
+
+	RecalculateView();
+	RecalculateRayDirections();
+}
+
+/*===========================================================================*/
 void c_Camera::OnUpdate(const float TimeDelta)
 {
 	const glm::vec2 MousePos = Input::GetMousePosition();

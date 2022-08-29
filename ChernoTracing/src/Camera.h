@@ -20,6 +20,8 @@ class c_Camera
 
 		const std::vector<glm::vec3>& GetRayDirections() const;
 
+		void SetPosition(const glm::vec3& NewPosition);
+
 		void OnUpdate(const float TimeDelta);
 		void OnResize(const uint32_t Width, const uint32_t Height);
 

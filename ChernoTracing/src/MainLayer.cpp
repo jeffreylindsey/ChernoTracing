@@ -11,6 +11,8 @@
 c_MainLayer::c_MainLayer()
 	: m_Image(1, 1, Walnut::ImageFormat::RGBA)
 {
+	// Move the camera to default to a different position.
+	m_Camera.SetPosition({0.0f, 0.0f, -3.0f});
 }
 
 /*=============================================================================
