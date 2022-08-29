@@ -186,14 +186,15 @@ void c_Camera::RecalculateRayDirections()
 	{
 		for (uint32_t x = 0; x < m_ViewportWidth; ++x)
 		{
-			glm::vec2 PixelUV
+			const glm::vec2 PixelUV
 				( static_cast<float>(x) / m_ViewportWidth
-				, static_cast<float>(y) / m_ViewportHeight
+				, 1.0f - static_cast<float>(y) / m_ViewportHeight
 				);
-			PixelUV = PixelUV * 2.0f - 1.0f; // -1 -> 1
+
+			const glm::vec2 Coord = PixelUV * 2.0f - 1.0f; // -1 -> 1
 
 			const glm::vec4 Target
-				= m_InverseProjection * glm::vec4(PixelUV.x, PixelUV.y, 1, 1);
+				= m_InverseProjection * glm::vec4(Coord.x, Coord.y, 1, 1);
 
 			// World space
 			const glm::vec3 RayDirection

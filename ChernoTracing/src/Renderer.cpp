@@ -36,11 +36,6 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 		{
 			const int PixelIndex = x + y * Width;
 
-			const glm::vec2 PixelUV
-				( static_cast<float>(x) / Width
-				, 1.0f - static_cast<float>(y) / Height
-				);
-
 			const glm::vec3 RayDirection = Camera.GetRayDirections()[PixelIndex];
 
 			m_ImageData[PixelIndex]
