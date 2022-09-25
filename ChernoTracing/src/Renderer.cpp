@@ -163,6 +163,10 @@ std::optional<float> c_Renderer::HitSphere
 	// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
 	const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
+	// Do not hit if the near side is behind the ray origin.
+	if (t < 0.0f)
+		return std::nullopt;
+
 	return t;
 }
 
