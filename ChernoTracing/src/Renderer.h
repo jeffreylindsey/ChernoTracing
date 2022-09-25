@@ -32,6 +32,11 @@ class c_Renderer
 			( const s_Ray& Ray
 			, const glm::vec3& LightDirection
 			) const;
+		std::optional<float> HitSphere
+			( const s_Ray& Ray
+			, const glm::vec3& SphereOrigin
+			, const float SphereRadius
+			) const;
 
 	//--- Private Members -----------------------------------------------------
 	private:

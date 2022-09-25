@@ -72,6 +72,28 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 	constexpr float SphereRadius = 0.5f;
 	constexpr glm::vec3 SphereColor(1.0f, 0.0f, 1.0f);
 
+	std::optional<float> HitDist = HitSphere(Ray, SphereOrigin, SphereRadius);
+
+	if (!HitDist.has_value())
+		return std::nullopt;  // No hit.
+
+	const glm::vec3 HitPoint = Ray.Origin + HitDist.value() * Ray.Direction;
+
+	const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
+
+	return SphereColor * glm::dot(HitNormal, -LightDirection);
+}
+
+/*=============================================================================
+	Returns the scaler along the given Ray where the sphere is hit, or nullopt
+	if the sphere is not hit.
+-----------------------------------------------------------------------------*/
+std::optional<float> c_Renderer::HitSphere
+( const s_Ray& Ray
+, const glm::vec3& SphereOrigin
+, const float SphereRadius
+) const
+{
 	// Ray: Point = RayOrigin + t*RayDirction, where t >= 0
 	// Sphere: magnitude(Point - SphereOrigin) = SphereRadius
 	/*
@@ -132,11 +154,7 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 	// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
 	const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
-	const glm::vec3 HitPoint = Ray.Origin + t*Ray.Direction;
-
-	const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
-
-	return SphereColor * glm::dot(HitNormal, -LightDirection);
+	return t;
 }
 
 /*===========================================================================*/
