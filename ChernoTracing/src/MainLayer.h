@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "Renderer.h"
+#include "Scene.h"
 
 #include "Walnut/Image.h"
 #include "Walnut/Layer.h"
@@ -35,6 +36,8 @@ class c_MainLayer : public Walnut::Layer
 		uint32_t m_ViewportHeight = 0;
 
 		Walnut::Image m_Image;
+
+		s_Scene m_Scene;
 
 		c_Camera m_Camera;
 

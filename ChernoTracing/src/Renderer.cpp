@@ -23,7 +23,11 @@ s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 // c_Renderer
 
 /*===========================================================================*/
-void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
+void c_Renderer::Render
+( const s_Scene& Scene
+, const c_Camera& Camera
+, Walnut::Image& r_Image
+)
 {
 	const auto& RayDirections = Camera.GetRayDirections();
 
@@ -37,7 +41,7 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 	{
 		m_ImageData.push_back
 			( FloatColorToRGBA
-				( RenderPixel({Camera.GetPosition(), RayDirection})
+				( RenderPixel(Scene, {Camera.GetPosition(), RayDirection})
 				)
 			);
 	}
@@ -46,11 +50,12 @@ void c_Renderer::Render(Walnut::Image& r_Image, const c_Camera& Camera)
 }
 
 /*===========================================================================*/
-glm::vec4 c_Renderer::RenderPixel(const s_Ray& Ray)
+glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 {
 	const glm::vec3 LightDirection
 		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
+	// TODO: Use Scene
 	std::optional<glm::vec3> HitColor = RenderSphere(Ray, LightDirection);
 
 	glm::vec4 Result;

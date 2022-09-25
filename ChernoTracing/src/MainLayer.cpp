@@ -11,6 +11,14 @@
 c_MainLayer::c_MainLayer()
 	: m_Image(1, 1, Walnut::ImageFormat::RGBA)
 {
+	m_Scene.Spheres.push_back
+		( s_Sphere
+			{ .Center = {0.0f, 0.0f, 0.0f}
+			, .Radius = 0.5f
+			, .Color = {1.0f, 0.0f, 1.0f}
+			}
+		);
+
 	// Move the camera to default to a different position.
 	m_Camera.SetPosition({0.0f, 0.0f, -3.0f});
 }
@@ -75,7 +83,7 @@ void c_MainLayer::Render()
 
 	m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
 
-	m_Renderer.Render(m_Image, m_Camera);
+	m_Renderer.Render(m_Scene, m_Camera, m_Image);
 
 	m_LastRenderTime = timer.ElapsedMillis();
 }

@@ -10,6 +10,7 @@
 #include <vector>
 
 class c_Camera;
+struct s_Scene;
 
 namespace Walnut
 {
@@ -23,11 +24,15 @@ class c_Renderer
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		void Render(Walnut::Image& r_Image, const c_Camera& Camera);
+		void Render
+			( const s_Scene& Scene
+			, const c_Camera& Camera
+			, Walnut::Image& r_Image
+			);
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec4 RenderPixel(const s_Ray& Ray);
+		glm::vec4 RenderPixel(const s_Scene& Scene, const s_Ray& Ray);
 
 		std::optional<glm::vec3> RenderSphere
 			( const s_Ray& Ray
