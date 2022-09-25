@@ -69,7 +69,7 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 ) const
 {
 	constexpr s_Sphere Sphere
-		{ .Origin = {0.0f, 0.0f, 0.0f}
+		{ .Center = {0.0f, 0.0f, 0.0f}
 		, .Radius = 0.5f
 		, .Color = {1.0f, 0.0f, 1.0f}
 		};
@@ -81,7 +81,7 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 
 	const glm::vec3 HitPoint = Ray.Origin + HitDist.value() * Ray.Direction;
 
-	const glm::vec3 HitNormal = glm::normalize(HitPoint - Sphere.Origin);
+	const glm::vec3 HitNormal = glm::normalize(HitPoint - Sphere.Center);
 
 	return Sphere.Color * glm::dot(HitNormal, -LightDirection);
 }
@@ -137,14 +137,14 @@ std::optional<float> c_Renderer::HitSphere
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
 
-	const glm::vec3 RaySphereOriginOffset = Ray.Origin - Sphere.Origin;
+	const glm::vec3 RaySphereCenterOffset = Ray.Origin - Sphere.Center;
 
 	// These are the a, b, and c components of the quadratic formula.
 	// at^2 + bt + c = 0
 	const float a = glm::dot(Ray.Direction, Ray.Direction);
-	const float b = 2.0f * glm::dot(Ray.Direction, RaySphereOriginOffset);
+	const float b = 2.0f * glm::dot(Ray.Direction, RaySphereCenterOffset);
 	const float c
-		= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
+		= glm::dot(RaySphereCenterOffset, RaySphereCenterOffset)
 			- Sphere.Radius * Sphere.Radius;
 
 	const float Discriminant = b * b - 4.0f * a * c;

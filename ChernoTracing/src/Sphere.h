@@ -7,7 +7,7 @@
 
 struct s_Sphere
 {
-	glm::vec3 Origin = {};  // Center
+	glm::vec3 Center = {};
 	float Radius = 0;
 	glm::vec3 Color = {};
 };
