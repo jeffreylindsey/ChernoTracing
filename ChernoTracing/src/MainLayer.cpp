@@ -15,6 +15,8 @@
 c_MainLayer::c_MainLayer()
 	: m_Image(1, 1, Walnut::ImageFormat::RGBA)
 {
+	m_Scene.LightDirection = glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
+
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, 0.0f, 0.0f}

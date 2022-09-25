@@ -54,9 +54,6 @@ void c_Renderer::Render
 /*===========================================================================*/
 glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 {
-	const glm::vec3 LightDirection
-		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
-
 	const s_Sphere* p_HitSphere = nullptr;
 	float MinHitDist = std::numeric_limits<float>::max();
 	for (const s_Sphere& Sphere : Scene.Spheres)
@@ -80,14 +77,15 @@ glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 		const glm::vec3 HitNormal
 			= glm::normalize(HitPoint - p_HitSphere->Center);
 
-		HitColor = p_HitSphere->Color * glm::dot(HitNormal, -LightDirection);
+		HitColor
+			= p_HitSphere->Color * glm::dot(HitNormal, -Scene.LightDirection);
 	}
 
 	glm::vec4 Result;
 	if (HitColor.has_value())
 		Result = glm::vec4(HitColor.value(), 1.0f);
 	else
-		Result = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		Result = glm::vec4(Scene.BackgroundColor, 1.0f);
 
 	return Result;
 }
