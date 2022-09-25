@@ -140,6 +140,7 @@
     <ClInclude Include="src\Ray.h" />
     <ClInclude Include="src\MainLayer.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Walnut\Walnut\Walnut.vcxproj">

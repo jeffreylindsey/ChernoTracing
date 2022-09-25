@@ -2,6 +2,7 @@
 
 #include "Color.h"
 #include "Ray.h"
+#include "Sphere.h"
 
 #include <glm/glm.hpp>
 
@@ -34,8 +35,7 @@ class c_Renderer
 			) const;
 		std::optional<float> HitSphere
 			( const s_Ray& Ray
-			, const glm::vec3& SphereOrigin
-			, const float SphereRadius
+			, const s_Sphere& Sphere
 			) const;
 
 	//--- Private Members -----------------------------------------------------

@@ -68,20 +68,22 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 , const glm::vec3& LightDirection
 ) const
 {
-	constexpr glm::vec3 SphereOrigin(0.0f, 0.0f, 0.0f);
-	constexpr float SphereRadius = 0.5f;
-	constexpr glm::vec3 SphereColor(1.0f, 0.0f, 1.0f);
+	constexpr s_Sphere Sphere
+		{ .Origin = {0.0f, 0.0f, 0.0f}
+		, .Radius = 0.5f
+		, .Color = {1.0f, 0.0f, 1.0f}
+		};
 
-	std::optional<float> HitDist = HitSphere(Ray, SphereOrigin, SphereRadius);
+	std::optional<float> HitDist = HitSphere(Ray, Sphere);
 
 	if (!HitDist.has_value())
 		return std::nullopt;  // No hit.
 
 	const glm::vec3 HitPoint = Ray.Origin + HitDist.value() * Ray.Direction;
 
-	const glm::vec3 HitNormal = glm::normalize(HitPoint - SphereOrigin);
+	const glm::vec3 HitNormal = glm::normalize(HitPoint - Sphere.Origin);
 
-	return SphereColor * glm::dot(HitNormal, -LightDirection);
+	return Sphere.Color * glm::dot(HitNormal, -LightDirection);
 }
 
 /*=============================================================================
@@ -90,8 +92,7 @@ std::optional<glm::vec3> c_Renderer::RenderSphere
 -----------------------------------------------------------------------------*/
 std::optional<float> c_Renderer::HitSphere
 ( const s_Ray& Ray
-, const glm::vec3& SphereOrigin
-, const float SphereRadius
+, const s_Sphere& Sphere
 ) const
 {
 	// Ray: Point = RayOrigin + t*RayDirction, where t >= 0
@@ -136,7 +137,7 @@ std::optional<float> c_Renderer::HitSphere
 	0 = (Rd*Rd)t^2 + 2(Rd*(Ro - So))t + ((Ro - So)*(Ro - So) - Sr^2)
 	*/
 
-	const glm::vec3 RaySphereOriginOffset = Ray.Origin - SphereOrigin;
+	const glm::vec3 RaySphereOriginOffset = Ray.Origin - Sphere.Origin;
 
 	// These are the a, b, and c components of the quadratic formula.
 	// at^2 + bt + c = 0
@@ -144,7 +145,7 @@ std::optional<float> c_Renderer::HitSphere
 	const float b = 2.0f * glm::dot(Ray.Direction, RaySphereOriginOffset);
 	const float c
 		= glm::dot(RaySphereOriginOffset, RaySphereOriginOffset)
-			- SphereRadius * SphereRadius;
+			- Sphere.Radius * Sphere.Radius;
 
 	const float Discriminant = b * b - 4.0f * a * c;
 
