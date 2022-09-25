@@ -1,6 +1,8 @@
 #include "Renderer.h"
 
 #include "Camera.h"
+#include "Scene.h"
+#include "Sphere.h"
 
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
@@ -55,8 +57,31 @@ glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 	const glm::vec3 LightDirection
 		= glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
-	// TODO: Use Scene
-	std::optional<glm::vec3> HitColor = RenderSphere(Ray, LightDirection);
+	const s_Sphere* p_HitSphere = nullptr;
+	float MinHitDist = std::numeric_limits<float>::max();
+	for (const s_Sphere& Sphere : Scene.Spheres)
+	{
+		std::optional<float> HitDist = HitSphere(Ray, Sphere);
+		if (!HitDist.has_value())
+			continue;
+
+		if (MinHitDist > HitDist.value())
+		{
+			MinHitDist = HitDist.value();
+			p_HitSphere = &Sphere;
+		}
+	}
+
+	std::optional<glm::vec3> HitColor;
+	if (p_HitSphere != nullptr)
+	{
+		const glm::vec3 HitPoint = Ray.Origin + MinHitDist * Ray.Direction;
+
+		const glm::vec3 HitNormal
+			= glm::normalize(HitPoint - p_HitSphere->Center);
+
+		HitColor = p_HitSphere->Color * glm::dot(HitNormal, -LightDirection);
+	}
 
 	glm::vec4 Result;
 	if (HitColor.has_value())
@@ -65,30 +90,6 @@ glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 		Result = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	return Result;
-}
-
-/*===========================================================================*/
-std::optional<glm::vec3> c_Renderer::RenderSphere
-( const s_Ray& Ray
-, const glm::vec3& LightDirection
-) const
-{
-	constexpr s_Sphere Sphere
-		{ .Center = {0.0f, 0.0f, 0.0f}
-		, .Radius = 0.5f
-		, .Color = {1.0f, 0.0f, 1.0f}
-		};
-
-	std::optional<float> HitDist = HitSphere(Ray, Sphere);
-
-	if (!HitDist.has_value())
-		return std::nullopt;  // No hit.
-
-	const glm::vec3 HitPoint = Ray.Origin + HitDist.value() * Ray.Direction;
-
-	const glm::vec3 HitNormal = glm::normalize(HitPoint - Sphere.Center);
-
-	return Sphere.Color * glm::dot(HitNormal, -LightDirection);
 }
 
 /*=============================================================================

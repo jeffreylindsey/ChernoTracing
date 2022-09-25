@@ -1,5 +1,7 @@
 #include "MainLayer.h"
 
+#include "Sphere.h"
+
 #include "Walnut/Timer.h"
 
 #include "imgui.h"
@@ -16,6 +18,13 @@ c_MainLayer::c_MainLayer()
 			{ .Center = {0.0f, 0.0f, 0.0f}
 			, .Radius = 0.5f
 			, .Color = {1.0f, 0.0f, 1.0f}
+			}
+		);
+	m_Scene.Spheres.push_back
+		( s_Sphere
+			{ .Center = {1.0f, 0.0f, 5.0f}
+			, .Radius = 1.5f
+			, .Color = {0.2f, 0.3f, 1.0f}
 			}
 		);
 

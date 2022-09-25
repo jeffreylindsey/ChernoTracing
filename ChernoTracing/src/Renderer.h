@@ -2,7 +2,6 @@
 
 #include "Color.h"
 #include "Ray.h"
-#include "Sphere.h"
 
 #include <glm/glm.hpp>
 
@@ -11,6 +10,7 @@
 
 class c_Camera;
 struct s_Scene;
+struct s_Sphere;
 
 namespace Walnut
 {
@@ -34,10 +34,6 @@ class c_Renderer
 	private:
 		glm::vec4 RenderPixel(const s_Scene& Scene, const s_Ray& Ray);
 
-		std::optional<glm::vec3> RenderSphere
-			( const s_Ray& Ray
-			, const glm::vec3& LightDirection
-			) const;
 		std::optional<float> HitSphere
 			( const s_Ray& Ray
 			, const s_Sphere& Sphere
