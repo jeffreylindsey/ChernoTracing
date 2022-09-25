@@ -6,6 +6,8 @@
 
 #include "imgui.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 /*****************************************************************************/
 // c_MainLayer
 
@@ -45,10 +47,29 @@ void c_MainLayer::OnUpdate(float ts)
 -----------------------------------------------------------------------------*/
 void c_MainLayer::OnUIRender()
 {
+	UIScene();
 	UISettings();
 	UIViewport();
 
 	Render();
+}
+
+/*===========================================================================*/
+void c_MainLayer::UIScene()
+{
+	ImGui::Begin("Scene");
+
+	for (s_Sphere& r_Sphere : m_Scene.Spheres)
+	{
+		ImGui::PushID(&r_Sphere);
+		ImGui::DragFloat3("Position", glm::value_ptr(r_Sphere.Center), 0.01f);
+		ImGui::DragFloat("Radius", &r_Sphere.Radius, 0.01f, 0.0f);
+		ImGui::ColorEdit3("Color", glm::value_ptr(r_Sphere.Color));
+		ImGui::Separator();
+		ImGui::PopID();
+	}
+
+	ImGui::End();
 }
 
 /*===========================================================================*/

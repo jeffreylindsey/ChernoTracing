@@ -25,6 +25,7 @@ class c_MainLayer : public Walnut::Layer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
+		void UIScene();
 		void UISettings();
 		void UIViewport();
 
