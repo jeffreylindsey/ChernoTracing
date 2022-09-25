@@ -8,6 +8,20 @@
 #include "Walnut/Random.h"
 
 /*===========================================================================*/
+s_RGBA FloatColorToRGBA(glm::vec3 FloatColor)
+{
+	FloatColor = glm::clamp(FloatColor, glm::vec3(0.0), glm::vec3(1.0f));
+
+	s_RGBA Result;
+	Result.Channel.R = static_cast<uint8_t>(FloatColor.r * 255.0f);
+	Result.Channel.G = static_cast<uint8_t>(FloatColor.g * 255.0f);
+	Result.Channel.B = static_cast<uint8_t>(FloatColor.b * 255.0f);
+	Result.Channel.A = 255;
+
+	return Result;
+}
+
+/*===========================================================================*/
 s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 {
 	FloatColor = glm::clamp(FloatColor, glm::vec4(0.0), glm::vec4(1.0f));
@@ -52,7 +66,7 @@ void c_Renderer::Render
 }
 
 /*===========================================================================*/
-glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
+glm::vec3 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 {
 	const s_Sphere* p_HitSphere = nullptr;
 	float MinHitDist = std::numeric_limits<float>::max();
@@ -69,25 +83,15 @@ glm::vec4 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 		}
 	}
 
-	std::optional<glm::vec3> HitColor;
-	if (p_HitSphere != nullptr)
-	{
-		const glm::vec3 HitPoint = Ray.Origin + MinHitDist * Ray.Direction;
+	if (p_HitSphere == nullptr)
+		return Scene.BackgroundColor;
 
-		const glm::vec3 HitNormal
-			= glm::normalize(HitPoint - p_HitSphere->Center);
+	const glm::vec3 HitPoint = Ray.Origin + MinHitDist * Ray.Direction;
 
-		HitColor
-			= p_HitSphere->Color * glm::dot(HitNormal, -Scene.LightDirection);
-	}
+	const glm::vec3 HitNormal
+		= glm::normalize(HitPoint - p_HitSphere->Center);
 
-	glm::vec4 Result;
-	if (HitColor.has_value())
-		Result = glm::vec4(HitColor.value(), 1.0f);
-	else
-		Result = glm::vec4(Scene.BackgroundColor, 1.0f);
-
-	return Result;
+	return (p_HitSphere->Color * glm::dot(HitNormal, -Scene.LightDirection));
 }
 
 /*=============================================================================

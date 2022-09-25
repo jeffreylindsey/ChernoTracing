@@ -32,7 +32,7 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec4 RenderPixel(const s_Scene& Scene, const s_Ray& Ray);
+		glm::vec3 RenderPixel(const s_Scene& Scene, const s_Ray& Ray);
 
 		std::optional<float> HitSphere
 			( const s_Ray& Ray
