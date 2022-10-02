@@ -57,21 +57,33 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 	m_ImageData.reserve(RayDirections.size());
 
 	for (const glm::vec3& RayDirection : RayDirections)
-	{
-		m_ImageData.push_back
-			( FloatColorToRGBA
-				( RenderPixel({m_Camera.GetPosition(), RayDirection})
-				)
-			);
-	}
+		m_ImageData.push_back(FloatColorToRGBA(RenderPixel(RayDirection)));
 
 	r_Image.SetData(m_ImageData.data());
 }
 
-/*===========================================================================*/
-glm::vec3 c_Renderer::RenderPixel(const s_Ray& Ray)
+/*=============================================================================
+	PerPixel
+-----------------------------------------------------------------------------*/
+glm::vec3 c_Renderer::RenderPixel(const glm::vec3& RayDirection) const
+{
+	const s_Ray Ray = {m_Camera.GetPosition(), RayDirection};
+
+	const s_Hit ClosestHit = FindClosestHit(Ray);
+
+	if (ClosestHit.p_Object == nullptr)
+		return m_Scene.BackgroundColor;
+
+	return RenderHit(Ray, ClosestHit);
+}
+
+/*=============================================================================
+	TraceRay
+-----------------------------------------------------------------------------*/
+c_Renderer::s_Hit c_Renderer::FindClosestHit(const s_Ray& Ray) const
 {
 	s_Hit ClosestHit = {nullptr, std::numeric_limits<float>::max()};
+
 	for (const s_Sphere& Sphere : m_Scene.Spheres)
 	{
 		const s_Hit Hit = HitSphere(Ray, Sphere);
@@ -82,15 +94,20 @@ glm::vec3 c_Renderer::RenderPixel(const s_Ray& Ray)
 			ClosestHit = Hit;
 	}
 
-	if (ClosestHit.p_Object == nullptr)
-		return m_Scene.BackgroundColor;
+	return ClosestHit;
+}
 
-	const glm::vec3 HitPoint = Ray.Origin + ClosestHit.Distance * Ray.Direction;
+/*=============================================================================
+	ClosestHit
+-----------------------------------------------------------------------------*/
+glm::vec3 c_Renderer::RenderHit(const s_Ray& Ray, const s_Hit& Hit) const
+{
+	const glm::vec3 HitPoint = Ray.Origin + Hit.Distance * Ray.Direction;
 
 	const glm::vec3 HitNormal
-		= glm::normalize(HitPoint - ClosestHit.p_Object->Center);
+		= glm::normalize(HitPoint - Hit.p_Object->Center);
 
-	return ClosestHit.p_Object->Color
+	return Hit.p_Object->Color
 		* glm::dot(HitNormal, -m_Scene.LightDirection);
 }
 

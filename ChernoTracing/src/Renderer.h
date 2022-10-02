@@ -38,7 +38,11 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec3 RenderPixel(const s_Ray& Ray);
+		glm::vec3 RenderPixel(const glm::vec3& RayDirection) const;
+
+		s_Hit FindClosestHit(const s_Ray& Ray) const;
+
+		glm::vec3 RenderHit(const s_Ray& Ray, const s_Hit& Hit) const;
 
 		s_Hit HitSphere(const s_Ray& Ray, const s_Sphere& Sphere) const;
 
