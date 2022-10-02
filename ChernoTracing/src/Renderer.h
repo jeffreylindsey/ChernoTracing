@@ -28,14 +28,19 @@ class c_Renderer
 
 		void Render(Walnut::Image& r_Image);
 
+	//--- Private Types -------------------------------------------------------
+	private:
+		struct s_Hit
+		{
+			const s_Sphere* p_Object = nullptr;
+			float Distance = 0.0f;
+		};
+
 	//--- Private Methods -----------------------------------------------------
 	private:
 		glm::vec3 RenderPixel(const s_Ray& Ray);
 
-		std::optional<float> HitSphere
-			( const s_Ray& Ray
-			, const s_Sphere& Sphere
-			) const;
+		s_Hit HitSphere(const s_Ray& Ray, const s_Sphere& Sphere) const;
 
 	//--- Private Members -----------------------------------------------------
 	private:

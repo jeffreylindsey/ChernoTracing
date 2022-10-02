@@ -71,37 +71,31 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 /*===========================================================================*/
 glm::vec3 c_Renderer::RenderPixel(const s_Ray& Ray)
 {
-	const s_Sphere* p_HitSphere = nullptr;
-	float MinHitDist = std::numeric_limits<float>::max();
+	s_Hit ClosestHit = {nullptr, std::numeric_limits<float>::max()};
 	for (const s_Sphere& Sphere : m_Scene.Spheres)
 	{
-		std::optional<float> HitDist = HitSphere(Ray, Sphere);
-		if (!HitDist.has_value())
+		const s_Hit Hit = HitSphere(Ray, Sphere);
+		if (Hit.p_Object == nullptr)
 			continue;
 
-		if (MinHitDist > HitDist.value())
-		{
-			MinHitDist = HitDist.value();
-			p_HitSphere = &Sphere;
-		}
+		if (ClosestHit.Distance > Hit.Distance)
+			ClosestHit = Hit;
 	}
 
-	if (p_HitSphere == nullptr)
+	if (ClosestHit.p_Object == nullptr)
 		return m_Scene.BackgroundColor;
 
-	const glm::vec3 HitPoint = Ray.Origin + MinHitDist * Ray.Direction;
+	const glm::vec3 HitPoint = Ray.Origin + ClosestHit.Distance * Ray.Direction;
 
 	const glm::vec3 HitNormal
-		= glm::normalize(HitPoint - p_HitSphere->Center);
+		= glm::normalize(HitPoint - ClosestHit.p_Object->Center);
 
-	return (p_HitSphere->Color * glm::dot(HitNormal, -m_Scene.LightDirection));
+	return ClosestHit.p_Object->Color
+		* glm::dot(HitNormal, -m_Scene.LightDirection);
 }
 
-/*=============================================================================
-	Returns the scaler along the given Ray where the sphere is hit, or nullopt
-	if the sphere is not hit.
------------------------------------------------------------------------------*/
-std::optional<float> c_Renderer::HitSphere
+/*===========================================================================*/
+c_Renderer::s_Hit c_Renderer::HitSphere
 ( const s_Ray& Ray
 , const s_Sphere& Sphere
 ) const
@@ -161,16 +155,16 @@ std::optional<float> c_Renderer::HitSphere
 	const float Discriminant = b * b - 4.0f * a * c;
 
 	if (Discriminant < 0.0f)
-		return std::nullopt;  // No hit.
+		return {nullptr};  // No hit.
 
 	// Quadratic formula: t = (-b +- sqrt(Discriminant)) / 2a
 	const float t = (-b - glm::sqrt(Discriminant)) / (2.0f * a);
 
 	// Do not hit if the near side is behind the ray origin.
 	if (t < 0.0f)
-		return std::nullopt;
+		return {nullptr};
 
-	return t;
+	return {&Sphere, t};
 }
 
 /*===========================================================================*/
