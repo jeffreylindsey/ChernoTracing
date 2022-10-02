@@ -24,15 +24,13 @@ class c_Renderer
 {
 	//--- Public Methods ------------------------------------------------------
 	public:
-		void Render
-			( const s_Scene& Scene
-			, const c_Camera& Camera
-			, Walnut::Image& r_Image
-			);
+		c_Renderer(const s_Scene& Scene, const c_Camera& Camera);
+
+		void Render(Walnut::Image& r_Image);
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec3 RenderPixel(const s_Scene& Scene, const s_Ray& Ray);
+		glm::vec3 RenderPixel(const s_Ray& Ray);
 
 		std::optional<float> HitSphere
 			( const s_Ray& Ray
@@ -41,6 +39,9 @@ class c_Renderer
 
 	//--- Private Members -----------------------------------------------------
 	private:
+		const s_Scene& m_Scene;
+		const c_Camera& m_Camera;
+
 		std::vector<s_RGBA> m_ImageData;
 };
 

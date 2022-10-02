@@ -39,13 +39,16 @@ s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 // c_Renderer
 
 /*===========================================================================*/
-void c_Renderer::Render
-( const s_Scene& Scene
-, const c_Camera& Camera
-, Walnut::Image& r_Image
-)
+c_Renderer::c_Renderer(const s_Scene& Scene, const c_Camera& Camera)
+	: m_Scene(Scene)
+	, m_Camera(Camera)
 {
-	const auto& RayDirections = Camera.GetRayDirections();
+}
+
+/*===========================================================================*/
+void c_Renderer::Render(Walnut::Image& r_Image)
+{
+	const auto& RayDirections = m_Camera.GetRayDirections();
 
 	// This function assumes there is one ray direction per pixel.
 	assert(RayDirections.size() == r_Image.GetWidth() * r_Image.GetHeight());
@@ -57,7 +60,7 @@ void c_Renderer::Render
 	{
 		m_ImageData.push_back
 			( FloatColorToRGBA
-				( RenderPixel(Scene, {Camera.GetPosition(), RayDirection})
+				( RenderPixel({m_Camera.GetPosition(), RayDirection})
 				)
 			);
 	}
@@ -66,11 +69,11 @@ void c_Renderer::Render
 }
 
 /*===========================================================================*/
-glm::vec3 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
+glm::vec3 c_Renderer::RenderPixel(const s_Ray& Ray)
 {
 	const s_Sphere* p_HitSphere = nullptr;
 	float MinHitDist = std::numeric_limits<float>::max();
-	for (const s_Sphere& Sphere : Scene.Spheres)
+	for (const s_Sphere& Sphere : m_Scene.Spheres)
 	{
 		std::optional<float> HitDist = HitSphere(Ray, Sphere);
 		if (!HitDist.has_value())
@@ -84,14 +87,14 @@ glm::vec3 c_Renderer::RenderPixel(const s_Scene& Scene, const s_Ray& Ray)
 	}
 
 	if (p_HitSphere == nullptr)
-		return Scene.BackgroundColor;
+		return m_Scene.BackgroundColor;
 
 	const glm::vec3 HitPoint = Ray.Origin + MinHitDist * Ray.Direction;
 
 	const glm::vec3 HitNormal
 		= glm::normalize(HitPoint - p_HitSphere->Center);
 
-	return (p_HitSphere->Color * glm::dot(HitNormal, -Scene.LightDirection));
+	return (p_HitSphere->Color * glm::dot(HitNormal, -m_Scene.LightDirection));
 }
 
 /*=============================================================================

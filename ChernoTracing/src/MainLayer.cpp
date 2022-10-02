@@ -14,6 +14,7 @@
 /*===========================================================================*/
 c_MainLayer::c_MainLayer()
 	: m_Image(1, 1, Walnut::ImageFormat::RGBA)
+	, m_Renderer(m_Scene, m_Camera)
 {
 	m_Scene.LightDirection = glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
@@ -115,7 +116,7 @@ void c_MainLayer::Render()
 
 	m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
 
-	m_Renderer.Render(m_Scene, m_Camera, m_Image);
+	m_Renderer.Render(m_Image);
 
 	m_LastRenderTime = timer.ElapsedMillis();
 }
