@@ -79,7 +79,7 @@ void c_Camera::OnUpdate(const float TimeDelta)
 
 	bool Moved = false;
 
-	const glm::vec3 RightDirection = glm::cross(m_ForwardDirection, m_UpAxis);
+	const glm::vec3 RightDirection = glm::cross(m_UpAxis, m_ForwardDirection);
 
 	// Movement
 	if (Input::IsKeyDown(KeyCode::W))
@@ -116,18 +116,18 @@ void c_Camera::OnUpdate(const float TimeDelta)
 	// Rotation
 	if (MouseDelta != glm::vec2{0.0f, 0.0f})
 	{
-		const float PitchDelta = MouseDelta.y * m_RotationSpeed;
 		const float YawDelta = MouseDelta.x * m_RotationSpeed;
+		const float PitchDelta = MouseDelta.y * m_RotationSpeed;
 
-		const glm::quat q
+		const glm::quat CombinedDelta
 			= glm::normalize
 				( glm::cross
-					( glm::angleAxis(-PitchDelta, RightDirection)
-					, glm::angleAxis(-YawDelta, m_UpAxis)
+					( glm::angleAxis(PitchDelta, RightDirection)
+					, glm::angleAxis(YawDelta, m_UpAxis)
 					)
 				);
 
-		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
+		m_ForwardDirection = glm::rotate(CombinedDelta, m_ForwardDirection);
 
 		Moved = true;
 	}
@@ -183,15 +183,16 @@ void c_Camera::RecalculateRayDirections()
 	{
 		for (uint32_t x = 0; x < m_ViewportWidth; ++x)
 		{
+			// Maps pixel coordinates.
+			// x: 0 (left) to width (right) => -1 (left) to 1 (right)
+			// y: 0 (top) to height (bottom) => 1 (top) to -1 (bottom)
 			const glm::vec2 PixelUV
-				( static_cast<float>(x) / m_ViewportWidth
-				, 1.0f - static_cast<float>(y) / m_ViewportHeight
+				( static_cast<float>(x) / m_ViewportWidth * 2.0f - 1.0f
+				, 1.0f - static_cast<float>(y) / m_ViewportHeight * 2.0f
 				);
 
-			const glm::vec2 Coord = PixelUV * 2.0f - 1.0f; // -1 -> 1
-
 			const glm::vec4 Target
-				= m_InverseProjection * glm::vec4(Coord.x, Coord.y, 1, 1);
+				= m_InverseProjection * glm::vec4(PixelUV.x, PixelUV.y, 1, 1);
 
 			// World space
 			const glm::vec3 RayDirection
