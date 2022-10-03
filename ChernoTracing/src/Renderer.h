@@ -36,13 +36,26 @@ class c_Renderer
 			float Distance = 0.0f;
 		};
 
+	//--- Private Static Members ----------------------------------------------
+	private:
+		static constexpr int MaxBounces = 1;
+
 	//--- Private Methods -----------------------------------------------------
 	private:
 		glm::vec3 RenderPixel(const glm::vec3& RayDirection) const;
+		glm::vec3 RenderRay
+			( const s_Ray& Ray
+			, const int Bounce
+			, const s_Sphere* p_SourceObject
+			) const;
 
-		s_Hit FindClosestHit(const s_Ray& Ray) const;
+		s_Hit FindClosestHit(const s_Ray& Ray, const s_Sphere* p_SourceObject) const;
 
-		glm::vec3 RenderHit(const s_Ray& Ray, const s_Hit& Hit) const;
+		glm::vec3 RenderHit
+			( const s_Ray& Ray
+			, const int Bounce
+			, const s_Hit& Hit
+			) const;
 
 		s_Hit HitSphere(const s_Ray& Ray, const s_Sphere& Sphere) const;
 

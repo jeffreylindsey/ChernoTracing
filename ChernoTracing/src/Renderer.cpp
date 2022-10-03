@@ -67,25 +67,41 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 -----------------------------------------------------------------------------*/
 glm::vec3 c_Renderer::RenderPixel(const glm::vec3& RayDirection) const
 {
-	const s_Ray Ray = {m_Camera.GetPosition(), RayDirection};
+	return RenderRay({m_Camera.GetPosition(), RayDirection}, 0, nullptr);
+}
 
-	const s_Hit ClosestHit = FindClosestHit(Ray);
+/*===========================================================================*/
+glm::vec3 c_Renderer::RenderRay
+( const s_Ray& Ray
+, const int Bounce
+, const s_Sphere* p_SourceObject
+) const
+{
+	const s_Hit ClosestHit = FindClosestHit(Ray, p_SourceObject);
 
 	if (ClosestHit.p_Object == nullptr)
 		return m_Scene.BackgroundColor;
 
-	return RenderHit(Ray, ClosestHit);
+	return RenderHit(Ray, Bounce, ClosestHit);
 }
 
 /*=============================================================================
 	TraceRay
 -----------------------------------------------------------------------------*/
-c_Renderer::s_Hit c_Renderer::FindClosestHit(const s_Ray& Ray) const
+c_Renderer::s_Hit c_Renderer::FindClosestHit
+( const s_Ray& Ray
+, const s_Sphere* p_SourceObject
+) const
 {
 	s_Hit ClosestHit = {nullptr, std::numeric_limits<float>::max()};
 
 	for (const s_Sphere& Sphere : m_Scene.Spheres)
 	{
+		// This is to avoid possibly hitting the object that the ray already
+		// bounced off of.
+		if (&Sphere == p_SourceObject)
+			continue;
+
 		const s_Hit Hit = HitSphere(Ray, Sphere);
 		if (Hit.p_Object == nullptr)
 			continue;
@@ -100,15 +116,29 @@ c_Renderer::s_Hit c_Renderer::FindClosestHit(const s_Ray& Ray) const
 /*=============================================================================
 	ClosestHit
 -----------------------------------------------------------------------------*/
-glm::vec3 c_Renderer::RenderHit(const s_Ray& Ray, const s_Hit& Hit) const
+glm::vec3 c_Renderer::RenderHit
+( const s_Ray& Ray
+, const int Bounce
+, const s_Hit& Hit
+) const
 {
 	const glm::vec3 HitPoint = Ray.Origin + Hit.Distance * Ray.Direction;
 
 	const glm::vec3 HitNormal
 		= glm::normalize(HitPoint - Hit.p_Object->Center);
 
-	return Hit.p_Object->Color
-		* glm::dot(HitNormal, -m_Scene.LightDirection);
+	const glm::vec3 HitColor
+		= Hit.p_Object->Color * glm::dot(HitNormal, -m_Scene.LightDirection);
+
+	if (Bounce >= MaxBounces)
+		return HitColor;
+
+	const s_Ray BounceRay
+		= {HitPoint, glm::reflect(Ray.Direction, HitNormal)};
+
+	const glm::vec3 BounceColor = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
+
+	return HitColor + BounceColor * 0.7f;
 }
 
 /*===========================================================================*/
