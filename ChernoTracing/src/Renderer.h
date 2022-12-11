@@ -65,6 +65,9 @@ class c_Renderer
 		const c_Camera& m_Camera;
 
 		std::vector<s_RGBA> m_ImageData;
+
+		std::vector<glm::vec3> m_AccumulationData;
+		uint64_t m_AccumulationCount = 0;
 };
 
 /*****************************************************************************/

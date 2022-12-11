@@ -50,14 +50,39 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 {
 	const auto& RayDirections = m_Camera.GetRayDirections();
 
+	const size_t NumPixels = RayDirections.size();
+
 	// This function assumes there is one ray direction per pixel.
-	assert(RayDirections.size() == r_Image.GetWidth() * r_Image.GetHeight());
+	assert(NumPixels == r_Image.GetWidth() * r_Image.GetHeight());
 
 	m_ImageData.clear();
-	m_ImageData.reserve(RayDirections.size());
+	m_ImageData.reserve(NumPixels);
 
+	if (m_AccumulationData.size() != NumPixels)
+		m_AccumulationCount = 0;
+
+	if (m_AccumulationCount == 0)
+	{
+		// Note: Clearing and resizing will all of the accumulation data to 0.
+		m_AccumulationData.clear();
+		m_AccumulationData.resize(NumPixels);
+	}
+
+	++m_AccumulationCount;
+
+	size_t AccumulationPixelIndex = 0;
 	for (const glm::vec3& RayDirection : RayDirections)
-		m_ImageData.push_back(FloatColorToRGBA(RenderPixel(RayDirection)));
+	{
+		glm::vec3& r_AccumulationPixel
+			= m_AccumulationData[AccumulationPixelIndex++];
+
+		r_AccumulationPixel += RenderPixel(RayDirection);
+
+		const glm::vec3 AccumulationAverageColor
+			= r_AccumulationPixel / static_cast<float>(m_AccumulationCount);
+
+		m_ImageData.push_back(FloatColorToRGBA(AccumulationAverageColor));
+	}
 
 	r_Image.SetData(m_ImageData.data());
 }
