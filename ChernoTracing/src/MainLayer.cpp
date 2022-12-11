@@ -18,8 +18,12 @@ c_MainLayer::c_MainLayer()
 {
 	m_Scene.LightDirection = glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
-	m_Scene.Materials.push_back(s_Material{.Color = {1.0f, 0.0f, 1.0f}});
-	m_Scene.Materials.push_back(s_Material{.Color = {0.2f, 0.3f, 1.0f}});
+	m_Scene.Materials.push_back
+		( s_Material{.Color = {1.0f, 0.0f, 1.0f}, .Roughness = 0.0f}
+		);
+	m_Scene.Materials.push_back
+		( s_Material{.Color = {0.2f, 0.3f, 1.0f}, .Roughness = 0.1f}
+		);
 
 	m_Scene.Spheres.push_back
 		( s_Sphere

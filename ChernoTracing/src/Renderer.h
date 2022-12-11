@@ -38,7 +38,7 @@ class c_Renderer
 
 	//--- Private Static Members ----------------------------------------------
 	private:
-		static constexpr int MaxBounces = 1;
+		static constexpr int MaxBounces = 5;
 
 	//--- Private Methods -----------------------------------------------------
 	private:

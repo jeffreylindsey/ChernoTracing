@@ -146,7 +146,7 @@ glm::vec3 c_Renderer::RenderHit
 
 	const glm::vec3 BounceColor = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
 
-	return HitColor + BounceColor * 0.7f;
+	return HitColor + BounceColor * 0.5f;
 }
 
 /*===========================================================================*/
