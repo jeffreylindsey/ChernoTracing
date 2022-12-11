@@ -18,18 +18,21 @@ c_MainLayer::c_MainLayer()
 {
 	m_Scene.LightDirection = glm::normalize(glm::vec3(-1.0f, -1.0f, 1.0f));
 
+	m_Scene.Materials.push_back(s_Material{.Color = {1.0f, 0.0f, 1.0f}});
+	m_Scene.Materials.push_back(s_Material{.Color = {0.2f, 0.3f, 1.0f}});
+
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, 0.0f, 0.0f}
 			, .Radius = 1.0f
-			, .Color = {1.0f, 0.0f, 1.0f}
+			, .MaterialIndex = 0
 			}
 		);
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, -101.0f, 0.0f}
 			, .Radius = 100.0f
-			, .Color = {0.2f, 0.3f, 1.0f}
+			, .MaterialIndex = 1
 			}
 		);
 
@@ -62,12 +65,22 @@ void c_MainLayer::UIScene()
 {
 	ImGui::Begin("Scene");
 
+	static constexpr size_t MaterialIndexMin = 0;
+	const size_t MaterialIndexMax = m_Scene.Materials.size() - 1;
+
 	for (s_Sphere& r_Sphere : m_Scene.Spheres)
 	{
 		ImGui::PushID(&r_Sphere);
 		ImGui::DragFloat3("Position", glm::value_ptr(r_Sphere.Center), 0.01f);
 		ImGui::DragFloat("Radius", &r_Sphere.Radius, 0.01f, 0.0f);
-		ImGui::ColorEdit3("Color", glm::value_ptr(r_Sphere.Color));
+		ImGui::DragScalar
+			( "Material"
+			, ImGuiDataType_U64
+			, &r_Sphere.MaterialIndex
+			, 1.0f
+			, &MaterialIndexMin
+			, &MaterialIndexMax
+			);
 		ImGui::Separator();
 		ImGui::PopID();
 	}

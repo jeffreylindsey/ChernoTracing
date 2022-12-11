@@ -127,8 +127,11 @@ glm::vec3 c_Renderer::RenderHit
 	const glm::vec3 HitNormal
 		= glm::normalize(HitPoint - Hit.p_Object->Center);
 
+	const s_Material& HitMaterial
+		= m_Scene.Materials[Hit.p_Object->MaterialIndex];
+
 	const glm::vec3 HitColor
-		= Hit.p_Object->Color * glm::dot(HitNormal, -m_Scene.LightDirection);
+		= HitMaterial.Color * glm::dot(HitNormal, -m_Scene.LightDirection);
 
 	if (Bounce >= MaxBounces)
 		return HitColor;
