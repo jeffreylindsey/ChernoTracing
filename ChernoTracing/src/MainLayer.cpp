@@ -21,20 +21,20 @@ c_MainLayer::c_MainLayer()
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, 0.0f, 0.0f}
-			, .Radius = 0.5f
+			, .Radius = 1.0f
 			, .Color = {1.0f, 0.0f, 1.0f}
 			}
 		);
 	m_Scene.Spheres.push_back
 		( s_Sphere
-			{ .Center = {1.0f, 0.0f, 5.0f}
-			, .Radius = 1.5f
+			{ .Center = {0.0f, -101.0f, 0.0f}
+			, .Radius = 100.0f
 			, .Color = {0.2f, 0.3f, 1.0f}
 			}
 		);
 
 	// Move the camera to default to a different position.
-	m_Camera.SetPosition({0.0f, 0.0f, -3.0f});
+	m_Camera.SetPosition({0.0f, 0.0f, -6.0f});
 }
 
 /*=============================================================================
