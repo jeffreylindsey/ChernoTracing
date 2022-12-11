@@ -49,7 +49,8 @@ c_MainLayer::c_MainLayer()
 -----------------------------------------------------------------------------*/
 void c_MainLayer::OnUpdate(float ts)
 {
-	m_Camera.OnUpdate(ts);
+	if (m_Camera.OnUpdate(ts))
+		m_Renderer.ResetAccumulation();
 }
 
 /*=============================================================================

@@ -62,8 +62,10 @@ void c_Camera::SetPosition(const glm::vec3& NewPosition)
 	RecalculateRayDirections();
 }
 
-/*===========================================================================*/
-void c_Camera::OnUpdate(const float TimeDelta)
+/*=============================================================================
+	Returns true only if the camera moved.
+-----------------------------------------------------------------------------*/
+bool c_Camera::OnUpdate(const float TimeDelta)
 {
 	const glm::vec2 MousePos = Input::GetMousePosition();
 	const glm::vec2 MouseDelta = MousePos - m_LastMousePosition;
@@ -72,7 +74,7 @@ void c_Camera::OnUpdate(const float TimeDelta)
 	if (!Input::IsMouseButtonDown(MouseButton::Right))
 	{
 		Input::SetCursorMode(CursorMode::Normal);
-		return;
+		return false;
 	}
 
 	Input::SetCursorMode(CursorMode::Locked);
@@ -137,6 +139,8 @@ void c_Camera::OnUpdate(const float TimeDelta)
 		RecalculateView();
 		RecalculateRayDirections();
 	}
+
+	return Moved;
 }
 
 /*===========================================================================*/

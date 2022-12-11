@@ -22,7 +22,7 @@ class c_Camera
 
 		void SetPosition(const glm::vec3& NewPosition);
 
-		void OnUpdate(const float TimeDelta);
+		bool OnUpdate(const float TimeDelta);
 		void OnResize(const uint32_t Width, const uint32_t Height);
 
 	//--- Private Static Members ----------------------------------------------
