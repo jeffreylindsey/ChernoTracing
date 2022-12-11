@@ -72,6 +72,14 @@ void c_MainLayer::UIScene()
 		ImGui::PopID();
 	}
 
+	for (s_Material& r_Material : m_Scene.Materials)
+	{
+		ImGui::PushID(&r_Material);
+		ImGui::ColorEdit3("Color", glm::value_ptr(r_Material.Color));
+		ImGui::Separator();
+		ImGui::PopID();
+	}
+
 	ImGui::End();
 }
 

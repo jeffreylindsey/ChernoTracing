@@ -14,5 +14,6 @@
     <ClInclude Include="src\Ray.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Material.h" />
   </ItemGroup>
 </Project>
