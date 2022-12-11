@@ -89,6 +89,7 @@ void c_MainLayer::UIScene()
 	{
 		ImGui::PushID(&r_Material);
 		ImGui::ColorEdit3("Color", glm::value_ptr(r_Material.Color));
+		ImGui::DragFloat("Roughness", &r_Material.Roughness, 0.001f, 0.0f, 1.0f);
 		ImGui::Separator();
 		ImGui::PopID();
 	}

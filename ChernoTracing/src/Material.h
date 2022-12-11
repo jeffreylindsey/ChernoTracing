@@ -8,7 +8,7 @@
 struct s_Material
 {
 	glm::vec3 Color = {};
-	//float Roughness = 0.0f;
+	float Roughness = 0.0f;
 	//float Metallic = 0.0f;
 };
 

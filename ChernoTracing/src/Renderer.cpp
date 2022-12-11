@@ -127,17 +127,22 @@ glm::vec3 c_Renderer::RenderHit
 	const glm::vec3 HitNormal
 		= glm::normalize(HitPoint - Hit.p_Object->Center);
 
+	const float LightIntensity = glm::dot(HitNormal, -m_Scene.LightDirection);
+
 	const s_Material& HitMaterial
 		= m_Scene.Materials[Hit.p_Object->MaterialIndex];
 
 	const glm::vec3 HitColor
-		= HitMaterial.Color * glm::dot(HitNormal, -m_Scene.LightDirection);
+		= HitMaterial.Color * LightIntensity;
 
 	if (Bounce >= MaxBounces)
 		return HitColor;
 
+	const auto MicrofacetOffset
+		= Walnut::Random::Vec3(-0.5f, 0.5f) * HitMaterial.Roughness;
+
 	const s_Ray BounceRay
-		= {HitPoint, glm::reflect(Ray.Direction, HitNormal)};
+		= {HitPoint, glm::reflect(Ray.Direction, HitNormal + MicrofacetOffset)};
 
 	const glm::vec3 BounceColor = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
 
