@@ -70,6 +70,8 @@ class c_Renderer
 		const s_Scene& m_Scene;
 		const c_Camera& m_Camera;
 
+		std::vector<size_t> m_PixelIndexes;
+
 		std::vector<s_RGBA> m_ImageData;
 
 		std::vector<glm::vec3> m_AccumulationData;

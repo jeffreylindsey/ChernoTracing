@@ -7,6 +7,8 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
+#include <algorithm>
+#include <execution>
 #include <ranges>
 
 /*===========================================================================*/
@@ -57,6 +59,13 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 	// This function assumes there is one ray direction per pixel.
 	assert(NumPixels == r_Image.GetWidth() * r_Image.GetHeight());
 
+	if (m_PixelIndexes.size() != NumPixels)
+	{
+		m_PixelIndexes.resize(NumPixels);
+		for (size_t PixelIndex = 0; PixelIndex < NumPixels; ++PixelIndex)
+			m_PixelIndexes[PixelIndex] = PixelIndex;
+	}
+
 	m_ImageData.clear();
 	m_ImageData.resize(NumPixels);
 
@@ -72,20 +81,25 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 
 	++m_AccumulationCount;
 
-	for (size_t PixelIndex : std::views::iota(0) | std::views::take(NumPixels))
-	{
-		const glm::vec3& RayDirection = RayDirections[PixelIndex];
+	std::for_each
+		( std::execution::par_unseq
+		, m_PixelIndexes.begin()
+		, m_PixelIndexes.end()
+		, [&](const size_t PixelIndex)
+			{
+				const glm::vec3& RayDirection = RayDirections[PixelIndex];
 
-		glm::vec3& r_AccumulationPixel
-			= m_AccumulationData[PixelIndex];
+				glm::vec3& r_AccumulationPixel
+					= m_AccumulationData[PixelIndex];
 
-		r_AccumulationPixel += RenderPixel(RayDirection);
+				r_AccumulationPixel += RenderPixel(RayDirection);
 
-		const glm::vec3 AccumulationAverageColor
-			= r_AccumulationPixel / static_cast<float>(m_AccumulationCount);
+				const glm::vec3 AccumulationAverageColor
+					= r_AccumulationPixel / static_cast<float>(m_AccumulationCount);
 
-		m_ImageData[PixelIndex] = FloatColorToRGBA(AccumulationAverageColor);
-	}
+				m_ImageData[PixelIndex] = FloatColorToRGBA(AccumulationAverageColor);
+			}
+		);
 
 	r_Image.SetData(m_ImageData.data());
 }
