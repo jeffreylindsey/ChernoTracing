@@ -7,6 +7,8 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 
+#include <ranges>
+
 /*===========================================================================*/
 s_RGBA FloatColorToRGBA(glm::vec3 FloatColor)
 {
@@ -56,7 +58,7 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 	assert(NumPixels == r_Image.GetWidth() * r_Image.GetHeight());
 
 	m_ImageData.clear();
-	m_ImageData.reserve(NumPixels);
+	m_ImageData.resize(NumPixels);
 
 	if (!m_UseAccumulation || m_AccumulationData.size() != NumPixels)
 		ResetAccumulation();
@@ -70,18 +72,19 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 
 	++m_AccumulationCount;
 
-	size_t AccumulationPixelIndex = 0;
-	for (const glm::vec3& RayDirection : RayDirections)
+	for (size_t PixelIndex : std::views::iota(0) | std::views::take(NumPixels))
 	{
+		const glm::vec3& RayDirection = RayDirections[PixelIndex];
+
 		glm::vec3& r_AccumulationPixel
-			= m_AccumulationData[AccumulationPixelIndex++];
+			= m_AccumulationData[PixelIndex];
 
 		r_AccumulationPixel += RenderPixel(RayDirection);
 
 		const glm::vec3 AccumulationAverageColor
 			= r_AccumulationPixel / static_cast<float>(m_AccumulationCount);
 
-		m_ImageData.push_back(FloatColorToRGBA(AccumulationAverageColor));
+		m_ImageData[PixelIndex] = FloatColorToRGBA(AccumulationAverageColor);
 	}
 
 	r_Image.SetData(m_ImageData.data());
