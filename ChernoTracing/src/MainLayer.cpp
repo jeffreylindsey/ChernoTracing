@@ -107,8 +107,14 @@ void c_MainLayer::UISettings()
 	ImGui::Begin("Settings");
 
 	ImGui::Text("Last render: %.3fms", m_LastRenderTime);
+
 	if (ImGui::Button("Render"))
 		Render();
+
+	ImGui::Checkbox("Accumulate", &m_Renderer.m_UseAccumulation);
+
+	if (ImGui::Button("Reset"))
+		m_Renderer.ResetAccumulation();
 
 	ImGui::End();
 }

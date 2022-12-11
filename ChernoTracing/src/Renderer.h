@@ -22,11 +22,17 @@ namespace Walnut
 
 class c_Renderer
 {
+	//--- Public Members ------------------------------------------------------
+	public:
+		bool m_UseAccumulation = true;
+
 	//--- Public Methods ------------------------------------------------------
 	public:
 		c_Renderer(const s_Scene& Scene, const c_Camera& Camera);
 
 		void Render(Walnut::Image& r_Image);
+
+		void ResetAccumulation();
 
 	//--- Private Types -------------------------------------------------------
 	private:

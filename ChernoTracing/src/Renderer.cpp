@@ -58,8 +58,8 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 	m_ImageData.clear();
 	m_ImageData.reserve(NumPixels);
 
-	if (m_AccumulationData.size() != NumPixels)
-		m_AccumulationCount = 0;
+	if (!m_UseAccumulation || m_AccumulationData.size() != NumPixels)
+		ResetAccumulation();
 
 	if (m_AccumulationCount == 0)
 	{
@@ -85,6 +85,14 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 	}
 
 	r_Image.SetData(m_ImageData.data());
+}
+
+/*=============================================================================
+	ResetFrameIndex
+-----------------------------------------------------------------------------*/
+void c_Renderer::ResetAccumulation()
+{
+	m_AccumulationCount = 0;
 }
 
 /*=============================================================================
