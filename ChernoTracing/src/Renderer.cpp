@@ -117,7 +117,14 @@ void c_Renderer::ResetAccumulation()
 -----------------------------------------------------------------------------*/
 glm::vec3 c_Renderer::RenderPixel(const glm::vec3& RayDirection) const
 {
-	return RenderRay({m_Camera.GetPosition(), RayDirection}, 0, nullptr);
+	glm::vec3 Contribution(1.0f);
+
+	return RenderRay
+		( s_Ray{m_Camera.GetPosition(), RayDirection}
+		, 0
+		, nullptr
+		, Contribution
+		);
 }
 
 /*===========================================================================*/
@@ -125,14 +132,15 @@ glm::vec3 c_Renderer::RenderRay
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Sphere* p_SourceObject
+, glm::vec3& r_Contribution
 ) const
 {
 	const s_Hit ClosestHit = FindClosestHit(Ray, p_SourceObject);
 
 	if (ClosestHit.p_Object == nullptr)
-		return m_Scene.BackgroundColor;
+		return {};
 
-	return RenderHit(Ray, Bounce, ClosestHit);
+	return RenderHit(Ray, Bounce, ClosestHit, r_Contribution);
 }
 
 /*=============================================================================
@@ -170,6 +178,7 @@ glm::vec3 c_Renderer::RenderHit
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Hit& Hit
+, glm::vec3& r_Contribution
 ) const
 {
 	const glm::vec3 HitPoint = Ray.Origin + Hit.Distance * Ray.Direction;
@@ -177,26 +186,23 @@ glm::vec3 c_Renderer::RenderHit
 	const glm::vec3 HitNormal
 		= glm::normalize(HitPoint - Hit.p_Object->Center);
 
-	const float LightIntensity = glm::dot(HitNormal, -m_Scene.LightDirection);
-
 	const s_Material& HitMaterial
 		= m_Scene.Materials[Hit.p_Object->MaterialIndex];
 
-	const glm::vec3 HitColor
-		= HitMaterial.Color * LightIntensity;
-
 	if (Bounce >= MaxBounces)
-		return HitColor;
-
-	const auto MicrofacetOffset
-		= Walnut::Random::Vec3(-0.5f, 0.5f) * HitMaterial.Roughness;
+		return {};
 
 	const s_Ray BounceRay
-		= {HitPoint, glm::reflect(Ray.Direction, HitNormal + MicrofacetOffset)};
+		= {HitPoint, glm::normalize(HitNormal + Walnut::Random::InUnitSphere())};
 
-	const glm::vec3 BounceColor = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
+	const glm::vec3 CurrentContribution = r_Contribution;
+	r_Contribution *= HitMaterial.Color;
 
-	return HitColor + BounceColor * 0.5f;
+	const glm::vec3 EmissionLight
+		= HitMaterial.EmissionColor * HitMaterial.EmissionPower;
+
+	return EmissionLight * CurrentContribution
+		+ RenderRay(BounceRay, Bounce + 1, Hit.p_Object, r_Contribution);
 }
 
 /*===========================================================================*/

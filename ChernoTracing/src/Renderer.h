@@ -53,6 +53,7 @@ class c_Renderer
 			( const s_Ray& Ray
 			, const int Bounce
 			, const s_Sphere* p_SourceObject
+			, glm::vec3& r_Contribution
 			) const;
 
 		s_Hit FindClosestHit(const s_Ray& Ray, const s_Sphere* p_SourceObject) const;
@@ -61,6 +62,7 @@ class c_Renderer
 			( const s_Ray& Ray
 			, const int Bounce
 			, const s_Hit& Hit
+			, glm::vec3& r_Contribution
 			) const;
 
 		s_Hit HitSphere(const s_Ray& Ray, const s_Sphere& Sphere) const;

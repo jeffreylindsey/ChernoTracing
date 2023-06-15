@@ -24,12 +24,27 @@ c_MainLayer::c_MainLayer()
 	m_Scene.Materials.push_back
 		( s_Material{.Color = {0.2f, 0.3f, 1.0f}, .Roughness = 0.1f}
 		);
+	m_Scene.Materials.push_back
+		( s_Material
+			{ .Color = {0.8f, 0.5f, 0.2f}
+			, .Roughness = 0.1f
+			, .EmissionColor = {0.8f, 0.5f, 0.2f}
+			, .EmissionPower = 2.0f
+			}
+		);
 
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, 0.0f, 0.0f}
 			, .Radius = 1.0f
 			, .MaterialIndex = 0
+			}
+		);
+	m_Scene.Spheres.push_back
+		( s_Sphere
+			{ .Center = {2.0f, 0.0f, 0.0f}
+			, .Radius = 1.0f
+			, .MaterialIndex = 2
 			}
 		);
 	m_Scene.Spheres.push_back
@@ -95,6 +110,17 @@ void c_MainLayer::UIScene()
 		ImGui::PushID(&r_Material);
 		ImGui::ColorEdit3("Color", glm::value_ptr(r_Material.Color));
 		ImGui::DragFloat("Roughness", &r_Material.Roughness, 0.001f, 0.0f, 1.0f);
+		ImGui::ColorEdit3
+			( "Emission Color"
+			, glm::value_ptr(r_Material.EmissionColor)
+			);
+		ImGui::DragFloat
+			( "Emission Power"
+			, &r_Material.EmissionPower
+			, 0.05f
+			, 0.0f
+			, std::numeric_limits<float>::max()
+			);
 		ImGui::Separator();
 		ImGui::PopID();
 	}
