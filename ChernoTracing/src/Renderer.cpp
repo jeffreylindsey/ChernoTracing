@@ -130,7 +130,13 @@ glm::vec3 c_Renderer::RenderRay
 	const s_Hit ClosestHit = FindClosestHit(Ray, p_SourceObject);
 
 	if (ClosestHit.p_Object == nullptr)
-		return {};
+	{
+		const s_Material& BackgroundMaterial
+			= m_Scene.Materials[m_Scene.BackgroundMaterialIndex];
+
+		return BackgroundMaterial.EmissionColor
+			* BackgroundMaterial.EmissionPower;
+	}
 
 	return RenderHit(Ray, Bounce, ClosestHit);
 }
