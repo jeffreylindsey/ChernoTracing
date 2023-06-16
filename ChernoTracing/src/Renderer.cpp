@@ -117,14 +117,7 @@ void c_Renderer::ResetAccumulation()
 -----------------------------------------------------------------------------*/
 glm::vec3 c_Renderer::RenderPixel(const glm::vec3& RayDirection) const
 {
-	glm::vec3 Contribution(1.0f);
-
-	return RenderRay
-		( s_Ray{m_Camera.GetPosition(), RayDirection}
-		, 0
-		, nullptr
-		, Contribution
-		);
+	return RenderRay(s_Ray{m_Camera.GetPosition(), RayDirection}, 0, nullptr);
 }
 
 /*===========================================================================*/
@@ -132,7 +125,6 @@ glm::vec3 c_Renderer::RenderRay
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Sphere* p_SourceObject
-, glm::vec3& r_Contribution
 ) const
 {
 	const s_Hit ClosestHit = FindClosestHit(Ray, p_SourceObject);
@@ -140,7 +132,7 @@ glm::vec3 c_Renderer::RenderRay
 	if (ClosestHit.p_Object == nullptr)
 		return {};
 
-	return RenderHit(Ray, Bounce, ClosestHit, r_Contribution);
+	return RenderHit(Ray, Bounce, ClosestHit);
 }
 
 /*=============================================================================
@@ -178,31 +170,36 @@ glm::vec3 c_Renderer::RenderHit
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Hit& Hit
-, glm::vec3& r_Contribution
 ) const
 {
-	const glm::vec3 HitPoint = Ray.Origin + Hit.Distance * Ray.Direction;
-
-	const glm::vec3 HitNormal
-		= glm::normalize(HitPoint - Hit.p_Object->Center);
-
 	const s_Material& HitMaterial
 		= m_Scene.Materials[Hit.p_Object->MaterialIndex];
 
-	if (Bounce >= MaxBounces)
-		return {};
-
-	const s_Ray BounceRay
-		= {HitPoint, glm::normalize(HitNormal + Walnut::Random::InUnitSphere())};
-
-	const glm::vec3 CurrentContribution = r_Contribution;
-	r_Contribution *= HitMaterial.Color;
-
+	// The light that this object emits.
 	const glm::vec3 EmissionLight
 		= HitMaterial.EmissionColor * HitMaterial.EmissionPower;
 
-	return EmissionLight * CurrentContribution
-		+ RenderRay(BounceRay, Bounce + 1, Hit.p_Object, r_Contribution);
+	// Light from elsewhere that gets bounced off of this object.
+	glm::vec3 BounceLight = {};
+	if (Bounce < MaxBounces)
+	{
+		const glm::vec3 HitPoint = Ray.Origin + Hit.Distance * Ray.Direction;
+
+		const glm::vec3 HitNormal
+			= glm::normalize(HitPoint - Hit.p_Object->Center);
+
+		const glm::vec3 BounceDirection
+			= glm::normalize(HitNormal + Walnut::Random::InUnitSphere());
+
+		const s_Ray BounceRay{HitPoint, BounceDirection};
+
+		BounceLight = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
+
+		// Filter the bounce light through this object's color.
+		BounceLight *= HitMaterial.Color;
+	}
+
+	return EmissionLight + BounceLight;
 }
 
 /*===========================================================================*/
