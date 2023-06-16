@@ -16,12 +16,25 @@ c_MainLayer::c_MainLayer()
 	: m_Image(1, 1, Walnut::ImageFormat::RGBA)
 	, m_Renderer(m_Scene, m_Camera)
 {
+	const size_t BackgroundMaterialIndex = m_Scene.Materials.size();
 	m_Scene.Materials.push_back
-		( s_Material{.Color = {1.0f, 0.0f, 1.0f}, .Roughness = 0.0f}
+		( s_Material
+			{ .EmissionColor = {0.6f, 0.7f, 0.9f}
+			, .EmissionPower = 1.0f
+			}
 		);
+
+	const size_t GroundMaterialIndex = m_Scene.Materials.size();
 	m_Scene.Materials.push_back
 		( s_Material{.Color = {0.2f, 0.3f, 1.0f}, .Roughness = 0.1f}
 		);
+
+	const size_t CenterSphereMaterialIndex = m_Scene.Materials.size();
+	m_Scene.Materials.push_back
+		( s_Material{.Color = {1.0f, 0.0f, 1.0f}, .Roughness = 0.0f}
+		);
+
+	const size_t RightSphereMaterialIndex = m_Scene.Materials.size();
 	m_Scene.Materials.push_back
 		( s_Material
 			{ .Color = {0.8f, 0.5f, 0.2f}
@@ -30,34 +43,28 @@ c_MainLayer::c_MainLayer()
 			, .EmissionPower = 2.0f
 			}
 		);
-	m_Scene.Materials.push_back
-		( s_Material
-			{ .EmissionColor = {0.6f, 0.7f, 0.9f}
-			, .EmissionPower = 1.0f
+
+	m_Scene.BackgroundMaterialIndex = BackgroundMaterialIndex;
+
+	m_Scene.Spheres.push_back
+		( s_Sphere
+			{ .Center = {0.0f, -101.0f, 0.0f}
+			, .Radius = 100.0f
+			, .MaterialIndex = GroundMaterialIndex
 			}
 		);
-
-	m_Scene.BackgroundMaterialIndex = 3;
-
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {0.0f, 0.0f, 0.0f}
 			, .Radius = 1.0f
-			, .MaterialIndex = 0
+			, .MaterialIndex = CenterSphereMaterialIndex
 			}
 		);
 	m_Scene.Spheres.push_back
 		( s_Sphere
 			{ .Center = {2.0f, 0.0f, 0.0f}
 			, .Radius = 1.0f
-			, .MaterialIndex = 2
-			}
-		);
-	m_Scene.Spheres.push_back
-		( s_Sphere
-			{ .Center = {0.0f, -101.0f, 0.0f}
-			, .Radius = 100.0f
-			, .MaterialIndex = 1
+			, .MaterialIndex = RightSphereMaterialIndex
 			}
 		);
 
