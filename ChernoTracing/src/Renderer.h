@@ -25,6 +25,7 @@ class c_Renderer
 	//--- Public Members ------------------------------------------------------
 	public:
 		bool m_UseAccumulation = true;
+		bool m_UsePCGHashRandom = false;
 
 	//--- Public Methods ------------------------------------------------------
 	public:
@@ -48,11 +49,15 @@ class c_Renderer
 
 	//--- Private Methods -----------------------------------------------------
 	private:
-		glm::vec3 RenderPixel(const glm::vec3& RayDirection) const;
+		glm::vec3 RenderPixel
+			( const glm::vec3& RayDirection
+			, uint32_t& r_PCGHashState
+			) const;
 		glm::vec3 RenderRay
 			( const s_Ray& Ray
 			, const int Bounce
 			, const s_Sphere* p_SourceObject
+			, uint32_t& r_PCGHashState
 			) const;
 
 		s_Hit FindClosestHit(const s_Ray& Ray, const s_Sphere* p_SourceObject) const;
@@ -61,6 +66,7 @@ class c_Renderer
 			( const s_Ray& Ray
 			, const int Bounce
 			, const s_Hit& Hit
+			, uint32_t& r_PCGHashState
 			) const;
 
 		s_Hit HitSphere(const s_Ray& Ray, const s_Sphere& Sphere) const;

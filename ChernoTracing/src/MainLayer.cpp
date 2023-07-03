@@ -152,6 +152,7 @@ void c_MainLayer::UISettings()
 		Render();
 
 	ImGui::Checkbox("Accumulate", &m_Renderer.m_UseAccumulation);
+	ImGui::Checkbox("Use PCG Hash Random", &m_Renderer.m_UsePCGHashRandom);
 
 	if (ImGui::Button("Reset"))
 		m_Renderer.ResetAccumulation();

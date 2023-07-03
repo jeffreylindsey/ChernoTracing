@@ -39,6 +39,35 @@ s_RGBA FloatColorToRGBA(glm::vec4 FloatColor)
 	return Result;
 }
 
+/*===========================================================================*/
+uint32_t PCGHash(const uint32_t Input)
+{
+	const uint32_t State = Input * 747796405u + 289133453u;
+	const uint32_t Word = ((State >> ((State >> 28u) + 4u)) ^ State) * 277803737u;
+	return (Word >> 22u) ^ Word;
+}
+
+/*===========================================================================*/
+float PCGHashFloat(uint32_t& r_State)
+{
+	r_State = PCGHash(r_State);
+
+	return static_cast<float>(r_State)
+		/ static_cast<float>(std::numeric_limits<uint32_t>::max());
+}
+
+/*===========================================================================*/
+glm::vec3 PCGHashUnitSphere(uint32_t& r_State)
+{
+	return glm::normalize
+		( glm::vec3
+			( 2.0f * PCGHashFloat(r_State) - 1.0f
+			, 2.0f * PCGHashFloat(r_State) - 1.0f
+			, 2.0f * PCGHashFloat(r_State) - 1.0f
+			)
+		);
+}
+
 /*****************************************************************************/
 // c_Renderer
 
@@ -89,10 +118,13 @@ void c_Renderer::Render(Walnut::Image& r_Image)
 			{
 				const glm::vec3& RayDirection = RayDirections[PixelIndex];
 
+				uint32_t PCGHashState
+					= static_cast<uint32_t>(PixelIndex * m_AccumulationCount);
+
 				glm::vec3& r_AccumulationPixel
 					= m_AccumulationData[PixelIndex];
 
-				r_AccumulationPixel += RenderPixel(RayDirection);
+				r_AccumulationPixel += RenderPixel(RayDirection, PCGHashState);
 
 				const glm::vec3 AccumulationAverageColor
 					= r_AccumulationPixel / static_cast<float>(m_AccumulationCount);
@@ -115,9 +147,17 @@ void c_Renderer::ResetAccumulation()
 /*=============================================================================
 	PerPixel
 -----------------------------------------------------------------------------*/
-glm::vec3 c_Renderer::RenderPixel(const glm::vec3& RayDirection) const
+glm::vec3 c_Renderer::RenderPixel
+( const glm::vec3& RayDirection
+, uint32_t& r_PCGHashState
+) const
 {
-	return RenderRay(s_Ray{m_Camera.GetPosition(), RayDirection}, 0, nullptr);
+	return RenderRay
+		( s_Ray{m_Camera.GetPosition(), RayDirection}
+		, 0
+		, nullptr
+		, r_PCGHashState
+		);
 }
 
 /*===========================================================================*/
@@ -125,6 +165,7 @@ glm::vec3 c_Renderer::RenderRay
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Sphere* p_SourceObject
+, uint32_t& r_PCGHashState
 ) const
 {
 	const s_Hit ClosestHit = FindClosestHit(Ray, p_SourceObject);
@@ -138,7 +179,7 @@ glm::vec3 c_Renderer::RenderRay
 			* BackgroundMaterial.EmissionPower;
 	}
 
-	return RenderHit(Ray, Bounce, ClosestHit);
+	return RenderHit(Ray, Bounce, ClosestHit, r_PCGHashState);
 }
 
 /*=============================================================================
@@ -176,6 +217,7 @@ glm::vec3 c_Renderer::RenderHit
 ( const s_Ray& Ray
 , const int Bounce
 , const s_Hit& Hit
+, uint32_t& r_PCGHashState
 ) const
 {
 	const s_Material& HitMaterial
@@ -194,12 +236,18 @@ glm::vec3 c_Renderer::RenderHit
 		const glm::vec3 HitNormal
 			= glm::normalize(HitPoint - Hit.p_Object->Center);
 
+		const glm::vec3 RandomDirection
+			= m_UsePCGHashRandom
+				? PCGHashUnitSphere(r_PCGHashState)
+				: Walnut::Random::InUnitSphere();
+
 		const glm::vec3 BounceDirection
-			= glm::normalize(HitNormal + Walnut::Random::InUnitSphere());
+			= glm::normalize(HitNormal + RandomDirection);
 
 		const s_Ray BounceRay{HitPoint, BounceDirection};
 
-		BounceLight = RenderRay(BounceRay, Bounce + 1, Hit.p_Object);
+		BounceLight
+			= RenderRay(BounceRay, Bounce + 1, Hit.p_Object, r_PCGHashState);
 
 		// Filter the bounce light through this object's color.
 		BounceLight *= HitMaterial.Color;
